@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductoController;
 use Illuminate\Support\Facades\Auth;
 
 
+
 // Ruta para insertar datos desde los archivos JSON
 Route::get('/recuperar-datos', [PanaderiaDB::class, 'recuperarBD']);
 
@@ -76,4 +77,15 @@ Route::get('/contacto', function () {
     return view('contacto');
 });
 
-Route::resource('/productos', ProductoController::class);
+
+
+
+Route::get('/admin/dashboard', function () {
+    abort_unless(Auth::check() && Auth::user()?->role === 'admin', 403);
+    return view('admin.dashboard');
+})->name('admin.dashboard');
+
+Route::resource('productos', ProductoController::class)->names('productos');
+
+
+//Route::resource('/productos', ProductoController::class);

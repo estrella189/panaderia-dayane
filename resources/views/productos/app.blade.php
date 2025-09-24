@@ -84,26 +84,7 @@
             gap: 1.5rem;
         }
         
-        .logout-btn {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-family: 'Roboto', sans-serif;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-        }
-        
-        .logout-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
+    
         .container {
             flex: 1;
             max-width: 1200px;
@@ -144,7 +125,7 @@
     </style>
 </head>
 <body>
-    <!-- Header con logo y botón de cierre de sesión -->
+    <!-- Header con logo -->
     <header>
         <div class="header-content">
             <a href="/" class="logo" style="text-decoration: none; color: inherit;">
@@ -154,18 +135,6 @@
                 <span>Panadería y Pastelería Dayane</span>
             </a>
             
-            @auth
-            <div class="auth-section">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Cerrar Sesión
-                    </button>
-                </form>
-            </div>
-            @endauth
-        </div>
     </header>
 
     <!-- Contenedor principal con el contenido de la página -->

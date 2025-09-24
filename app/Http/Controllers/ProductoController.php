@@ -3,11 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\productos;      // Tu modelo de productos
-use App\Models\categorias;     // Para cargar la categoría en los formularios
+use Illuminate\Support\Facades\Auth;  
+use App\Models\productos;
+use App\Models\categorias;
+use Illuminate\Support\Facades\Route;
+
 
 class ProductoController extends Controller
 {
+    public function __construct()
+    {
+        // Proteger TODO el CRUD para solo ADMIN (sin tocar Kernel)
+        $this->middleware(function ($request, $next) {
+            /** @var \App\Models\User|null $u */
+            $u = Auth::user();
+            if (!Auth::check() || !$u || $u->role !== 'admin') {
+                abort(403);
+            }
+            return $next($request);
+        });
+    }
+
     // Listar productos
     public function index()
     {
@@ -15,20 +31,19 @@ class ProductoController extends Controller
         return view('productos.index', compact('productos'));
     }
 
-    // Mostrar formulario para crear un nuevo producto
+    // Form crear
     public function create()
     {
-        // Obtener categorías para el select del formulario
         $categorias = categorias::all();
         return view('productos.create', compact('categorias'));
     }
 
-    // Guardar nuevo producto
+    // Guardar
     public function store(Request $request)
     {
         $request->validate([
-            'Nombre'      => 'required',
-            'Descripcion' => 'nullable',
+            'Nombre'      => 'required|string|max:255',
+            'Descripcion' => 'nullable|string',
             'Precio'      => 'required|numeric',
             'Stock'       => 'required|integer',
             'IdCategoria' => 'required|exists:categorias,IdCategoria',
@@ -36,23 +51,24 @@ class ProductoController extends Controller
 
         productos::create($request->all());
 
-        return redirect()->route('productos.index')->with('success', 'Producto agregado correctamente.');
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto agregado correctamente.');
     }
 
-    // Mostrar formulario para editar un producto
+    // Form editar
     public function edit($id)
     {
-        $producto = productos::findOrFail($id);
+        $producto   = productos::findOrFail($id);
         $categorias = categorias::all();
         return view('productos.edit', compact('producto', 'categorias'));
     }
 
-    // Actualizar producto
+    // Actualizar
     public function update(Request $request, $id)
     {
         $request->validate([
-            'Nombre'      => 'required',
-            'Descripcion' => 'nullable',
+            'Nombre'      => 'required|string|max:255',
+            'Descripcion' => 'nullable|string',
             'Precio'      => 'required|numeric',
             'Stock'       => 'required|integer',
             'IdCategoria' => 'required|exists:categorias,IdCategoria',
@@ -61,15 +77,17 @@ class ProductoController extends Controller
         $producto = productos::findOrFail($id);
         $producto->update($request->all());
 
-        return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente.');
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto actualizado correctamente.');
     }
 
-    // Eliminar producto
+    // Eliminar
     public function destroy($id)
     {
         $producto = productos::findOrFail($id);
         $producto->delete();
 
-        return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente.');
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto eliminado correctamente.');
     }
 }

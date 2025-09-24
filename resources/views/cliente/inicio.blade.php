@@ -1,8 +1,5 @@
-@extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <h1>Página de Cliente</h1>
-    <p>Hola {{ auth()->user()->name }}, este es tu inicio.</p>
-</div>
-@endsection
+
+<h1>Panel de Cliente</h1>
+<p>Bienvenido, {{ auth()->user()->name }}.</p>
+<form action="{{ route('logout') }}" method="POST">@csrf<button type="submit">Cerrar sesión</button></form>
