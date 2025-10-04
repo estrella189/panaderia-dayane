@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProductoController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\ClienteController;
 
 
 
@@ -88,4 +91,10 @@ Route::get('/admin/dashboard', function () {
 Route::resource('productos', ProductoController::class)->names('productos');
 
 
-//Route::resource('/productos', ProductoController::class);
+Route::middleware(['auth', 'can:view-empleado-panel'])->group(function () {
+    Route::get('/empleado', [EmpleadoController::class, 'panel'])->name('empleado.panel');
+});
+
+Route::middleware(['auth', 'can:view-cliente-panel'])->group(function () {
+    Route::get('/cliente', [ClienteController::class, 'panel'])->name('cliente.inicio');
+});
