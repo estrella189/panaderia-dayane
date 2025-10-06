@@ -84,7 +84,7 @@
             top: 50px; /* Ajusta la posición justo debajo del ícono */
             right: 300px; /* Más cerca del icono de hamburguesa */
             background-color: #fcf4f4;
-            border-radius: 8px;
+            border-radius: 20px;
             width: 300px; /* Tamaño reducido */
             padding: 5px 0;
             box-shadow: 0 4px 8px rgba(251, 246, 246, 0.974);
@@ -106,6 +106,51 @@
         .menu-toggle:checked + .menu-toggle-label + .menu {
             display: flex;
         }
+         /* Submenú con <details> */
+            .menu details {
+            padding: 4px 10px;
+            }
+
+            .menu summary {
+            list-style: none;           /* quita el triángulo por defecto */
+            cursor: pointer;
+            padding: 8px 10px;
+            font-size: 14px;
+            color: #0f0e0eda;
+            display: flex;
+           justify-content: center;  /* centra horizontalmente */
+            align-items: center;      /* centra verticalmente */
+            text-align: center;  
+            }
+
+            .menu summary::after {
+            content: "▸";               /* flechita cerrada */
+            font-size: 25px;
+              margin-left: 20px; 
+            }
+
+            .menu details[open] summary::after {
+            content: "▾";               /* flechita abierta */
+            }
+
+            .submenu {
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px;          /* sangría del submenú */
+            border-left: 2px solid #a97e5a;
+            }
+
+            .submenu a {
+            padding: 6px 10px;
+            font-size: 13px;
+            }
+
+            /* Hover coherente con tu estilo */
+            .menu a:hover, .submenu a:hover, .menu summary:hover {
+            background-color: #8b5e3c;
+            color: #fff;
+            }
+        
         /* Diseño y centrado de la imagen colash */
         .colash-image {
         display: block;
@@ -143,6 +188,10 @@
             font-size: 13px; /* Reduce el tamaño de fuente de los enlaces */
             padding: 10px; /* Ajusta el espacio */
         }
+         .menu details:hover > .submenu {
+    /* visual: no fuerza open, pero deja el hover bonito */
+    background: #fcf4f4;
+  }
 
         .menu-toggle-label {
             font-size: 18px; /* Ajusta el tamaño del ícono de menú */
@@ -183,21 +232,55 @@
     </header>
 
    
-    <nav>
-        <a href="index.html">Inicio</a>
-        <a href="Nosotros.html">Nosotros</a>
-        <a href="Mision y Vision.html">Misión y Visión</a>
-        <a href="productos.html">Productos</a>
+ <nav>
+    <a href="index.html">Inicio</a>
+    <a href="Nosotros.html">Nosotros</a>
+    <a href="Mision y Vision.html">Misión y Visión</a>
+    <a href="productos.html">Productos</a>
 
-        <!-- Menú hamburguesa -->
-        <input type="checkbox" id="menu-toggle" class="menu-toggle">
-        <label for="menu-toggle" class="menu-toggle-label">☰</label>
-        <div class="menu">
-            <a href="panes_dulces.html">Panes Dulces</a>
-            <a href="panes_salados.html">Panes Salados</a>
-            <a href="otros.html">Otros</a>
-        </div>
-    </nav>
+    <!-- Menú hamburguesa -->
+    <input type="checkbox" id="menu-toggle" class="menu-toggle">
+    <label for="menu-toggle" class="menu-toggle-label">☰</label>
+    <div class="menu">
+
+        <!-- NUEVO: categoría con submenú -->
+        <details>
+            <summary>Repostería</summary>
+            <div class="submenu">
+                <a href="panes_dulces.html">Pan Dulce</a>
+                <a href="panes_salados.html">Pan Salado</a>
+                <a href="otros.html">Pay de queso</a>
+    
+            </div>
+        </details>
+
+        <!-- Categoría con submenú -->
+        <details>
+            <summary>Pasteles</summary>
+            <div class="submenu">
+                <a href="Rollos y Variedades.html">Rollos y Variedades</a>
+                <a href="productos de temporada.html">Productos temporada</a>
+                <a href="pasteles de chocolates.html">Pasteles de chocolate</a>
+                <a href="Para Eventos.html">Para Eventos</a>
+                <a href="pasteles de frutas.html">Pasteles de fruta</a>
+            </div>
+        </details>
+
+            <!-- NUEVA Categoría Otros Productos -->
+        <details>
+            <summary>Otros Productos</summary>
+            <div class="submenu">
+                <a href="leche.html">Leche</a>
+                <a href="coca.html">Coca-Cola</a>
+                <a href="joyas.html">Joyas</a>
+                <a href="refrescos.html">Refrescos</a>
+                <a href="abarrotes.html">Abarrotes</a>
+            </div>
+        </details>
+
+    </div>
+</nav>
+
     <img src="prodcts.webp" alt="colash" class="colash-image">
 
  
