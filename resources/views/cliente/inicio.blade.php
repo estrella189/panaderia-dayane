@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,24 +22,34 @@
                   linear-gradient(180deg, var(--bg1), var(--bg2));
     }
 
-    /* Encabezado */
+    /* ===== Encabezado ===== */
     header{
-      position:sticky; top:0; z-index:10;
       background:linear-gradient(180deg, #8b5e3c, #7b5234);
-      color:#fff; text-align:center; padding:26px 18px 22px;
-      border-bottom:1px solid #00000014; box-shadow:0 8px 22px rgba(0,0,0,.12);
+      color:#fff; display:flex; align-items:center;
+      justify-content:space-between; padding:16px 22px;
+      box-shadow:0 8px 22px rgba(0,0,0,.15);
     }
     .brand{
-      display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap;
+      display:flex; gap:10px; align-items:center;
     }
     .brand .logo{
       width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
       background:#ffffff20; border:1px solid #ffffff35; font-size:1.2rem;
     }
-    header h1{ margin:0; font-size:1.6rem; letter-spacing:.3px; font-weight:800 }
-    header .sub{opacity:.92; margin-top:4px; letter-spacing:.2px}
+    header h1{ margin:0; font-size:1.4rem; letter-spacing:.3px; font-weight:800 }
+    header .sub{opacity:.9; margin-top:2px; font-size:.9rem; letter-spacing:.2px}
 
-    /* Contenido principal */
+    /* Botón regresar */
+    .back-btn{
+      background:#ffffff18; color:#fff; text-decoration:none;
+      border:1px solid #ffffff30; border-radius:10px;
+      padding:10px 14px; font-weight:600;
+      display:inline-flex; align-items:center; gap:6px;
+      transition:background .2s ease, transform .12s ease;
+    }
+    .back-btn:hover{background:#ffffff28; transform:translateY(-1px)}
+
+    /* ===== Contenido principal ===== */
     main{ width:min(880px, 92%); margin:42px auto; }
     .card{
       background:var(--glass);
@@ -61,7 +69,6 @@
     .card-head p{ margin:0; font-size:1.05rem }
     .hi{ font-weight:800 }
 
-    /* Solo un bloque con un ícono decorativo */
     .body{
       padding:26px 22px; display:flex; align-items:center; justify-content:center;
     }
@@ -90,12 +97,6 @@
     button:hover{ filter:brightness(.97) }
     button:active{ transform:translateY(1px) }
 
-    /* Accesibilidad */
-    a,button{ outline:none }
-    button:focus-visible{
-      box-shadow:0 0 0 3px #fff, 0 0 0 6px var(--focus);
-    }
-
     /* Pie */
     footer{
       text-align:center; color:var(--muted); padding:18px 12px; margin-bottom:8px;
@@ -103,8 +104,8 @@
 
     /* Responsive */
     @media (max-width:520px){
-      header h1{font-size:1.35rem}
-      .chip{ font-size:.98rem }
+      header h1{font-size:1.3rem}
+      .chip{ font-size:.95rem }
       .chip .emoji{ width:32px; height:32px; font-size:1.05rem }
     }
   </style>
@@ -118,6 +119,11 @@
         <div class="sub">Panadería y Pastelería Dayane</div>
       </div>
     </div>
+
+@if(auth()->user()->role === 'admin')
+  <a href="{{ url()->previous() }}" class="back-btn">⬅️ Regresar</a>
+@endif
+
   </header>
 
   <main role="main">
@@ -130,14 +136,14 @@
       <div class="body">
         <div class="chip">
           <div class="emoji">🥐</div>
-          <span>Disfruta tu experiencia</span>
+          <span>Disfruta tu experiencia como cliente</span>
         </div>
       </div>
 
       <div class="actions">
         <form action="{{ route('logout') }}" method="POST">
           @csrf
-          <button type="submit" aria-label="Cerrar sesión">Cerrar sesión</button>
+          <button type="submit" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
         </form>
       </div>
     </section>
@@ -148,3 +154,5 @@
   </footer>
 </body>
 </html>
+
+

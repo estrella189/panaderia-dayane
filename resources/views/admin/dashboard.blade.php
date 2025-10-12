@@ -35,92 +35,91 @@
     .dust::before{content:""; transform:scale(1.3) translateY(8px); opacity:.25}
     .dust::after{content:""; transform:scale(1.6) translateY(-10px); opacity:.18}
 
+    /* ===== Header + Hamburguesa ===== */
     header{
-      position:sticky; top:0; z-index:10;
+      position:sticky; top:0; z-index:20;
       background:linear-gradient(180deg, #8b5e3c, #7e5436);
-      color:#fff; text-align:center; padding:26px 18px 22px;
+      color:#fff; padding:14px 14px;
       border-bottom:1px solid #00000018; box-shadow:0 8px 22px rgba(0,0,0,.15);
     }
-    header .brand{
-      display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap;
+    .header-inner{
+      max-width:1100px; margin:0 auto;
+      display:flex; align-items:center; gap:12px; justify-content:space-between;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap;
     }
     .logo{
       width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
       background:#ffffff18; border:1px solid #ffffff30; font-size:1.2rem;
     }
-    header h1{
-      margin:0; font-size:1.7rem; letter-spacing:.3px; font-weight:800;
-    }
-    header .sub{opacity:.92; margin-top:4px; letter-spacing:.2px}
+    .titles{line-height:1.1}
+    .titles h1{margin:0; font-size:1.35rem; letter-spacing:.3px; font-weight:800}
+    .titles .sub{opacity:.92; margin-top:2px; letter-spacing:.2px; font-size:.95rem}
 
-    main{
-      width:min(900px,92%); margin:42px auto; position:relative;
-      padding:0 0 26px;
+    /* Toggle (checkbox hack) */
+    #nav-toggle{position:absolute; left:-9999px}
+    .burger{
+      display:inline-grid; place-items:center;
+      width:44px; height:44px; border-radius:12px;
+      background:#ffffff18; border:1px solid #ffffff30; cursor:pointer;
+      transition:filter .18s ease, transform .12s ease;
     }
-
-    /* Tarjeta principal con glassmorphism */
-    .card{
-      background:var(--glass);
-      backdrop-filter:saturate(1.2) blur(8px);
-      -webkit-backdrop-filter:saturate(1.2) blur(8px);
-      border:1px solid #ffffff66;
-      box-shadow:var(--shadow);
-      border-radius:calc(var(--radius) + 6px);
-      overflow:hidden;
+    .burger:hover{filter:brightness(1.05)}
+    .burger:active{transform:translateY(1px)}
+    .burger .bars, .burger .bars::before, .burger .bars::after{
+      content:""; display:block; width:22px; height:2px; background:#fff; border-radius:2px;
+      position:relative; transition:transform .2s ease, opacity .2s ease;
     }
+    .burger .bars::before{position:absolute; top:-7px}
+    .burger .bars::after {position:absolute; top:7px}
 
-    .card-head{
-      padding:24px 22px;
-      background:linear-gradient(180deg,#ffffffcc,#fffaf3cc);
+    /* Drawer */
+    .overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.35);
+      opacity:0; visibility:hidden; transition:opacity .18s ease, visibility .18s ease; z-index:18;
+    }
+    .drawer{
+      position:fixed; inset:auto 0 0 auto; top:0; height:100%; width:290px;
+      right:-310px; z-index:19;
+      background:#fff; color:var(--text);
+      box-shadow: -18px 0 36px rgba(0,0,0,.15);
+      border-left:1px solid var(--line);
+      transition:right .22s ease;
+      display:flex; flex-direction:column;
+    }
+    .drawer-head{
+      padding:18px 18px; background:linear-gradient(180deg,#fff,#fff7f1);
       border-bottom:1px solid var(--line);
-      text-align:center;
+      display:flex; align-items:center; gap:10px;
     }
-    .card-head p{margin:0; font-size:1.06rem}
-    .hi{font-weight:700}
+    .drawer-head .mini{
+      width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
+      background:#f7ede4; border:1px solid var(--line);
+    }
+    .drawer-nav{
+      padding:12px;
+      display:grid; gap:8px;
+    }
+    .drawer-nav a, .drawer-nav form button{
+      display:flex; align-items:center; gap:10px;
+      padding:12px 14px; border-radius:12px; text-decoration:none; border:1px solid var(--line);
+      background:#fff; color:var(--text); font-weight:700;
+      box-shadow:0 6px 14px rgba(0,0,0,.04);
+      transition:transform .12s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .drawer-nav a:hover, .drawer-nav form button:hover{
+      transform:translateY(-2px); background:#fffdfb; border-color:#e6d8c7;
+      box-shadow:0 12px 20px rgba(0,0,0,.06);
+    }
+    .drawer-nav .emoji{ width:24px; text-align:center }
 
-    .grid{
-      padding:24px; display:grid; gap:16px;
-      grid-template-columns:repeat(3,1fr);
-    }
-
-    .tile{
-      background:#ffffffee; border:1px solid var(--line);
-      border-radius:var(--radius); padding:18px 16px;
-      text-align:center;
-      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
-      box-shadow:0 8px 20px rgba(0,0,0,.05);
-    }
-    .tile:hover{
-      transform:translateY(-4px);
-      box-shadow:0 16px 30px rgba(0,0,0,.08);
-      border-color:#e0d4c2;
-      background:#fff;
-    }
-
-    .tile a{
-      text-decoration:none; color:var(--text);
-      display:flex; flex-direction:column; align-items:center; gap:8px; font-weight:800;
-      letter-spacing:.2px;
-    }
-    .emoji{
-      font-size:1.7rem; width:48px; height:48px; display:grid; place-items:center;
-      border-radius:14px; background:#f8efe6; border:1px solid var(--line);
-    }
-
-    .actions{
-      padding:0 24px 24px; display:flex; justify-content:center;
-    }
-    form{margin-top:4px}
-    button{
-      appearance:none; border:none; cursor:pointer;
-      background:linear-gradient(180deg, var(--accent), #c76635);
-      color:#fff; font-weight:800; letter-spacing:.3px;
-      padding:12px 18px; border-radius:12px;
-      box-shadow:0 10px 22px rgba(215,122,73,.28);
-      transition:transform .12s ease, filter .18s ease;
-    }
-    button:hover{ filter:brightness(.97) }
-    button:active{ transform:translateY(1px) }
+    /* Estado abierto */
+    #nav-toggle:checked ~ .overlay{opacity:1; visibility:visible}
+    #nav-toggle:checked ~ .drawer{ right:0 }
+    #nav-toggle:checked + label .bars{ transform:rotate(45deg) }
+    #nav-toggle:checked + label .bars::before{ transform:rotate(90deg); top:0 }
+    #nav-toggle:checked + label .bars::after { opacity:0 }
 
     /* Focus accesible */
     a,button{ outline:none }
@@ -128,73 +127,55 @@
       box-shadow:0 0 0 3px #fff, 0 0 0 6px var(--focus) !important;
       border-radius:12px;
     }
-
-    footer{
-      text-align:center; color:var(--muted); padding:18px 12px; margin-bottom:8px;
-    }
-
-    /* Responsive */
-    @media (max-width:860px){ .grid{grid-template-columns:1fr 1fr} }
-    @media (max-width:520px){
-      header h1{font-size:1.35rem}
-      .grid{grid-template-columns:1fr}
-      .emoji{font-size:1.5rem; width:44px; height:44px}
-    }
   </style>
 </head>
 <body>
   <div class="dust"></div>
 
   <header>
-    <div class="brand">
-      <div class="logo">🍞</div>
-      <div>
-        <h1>Panel de Administrador</h1>
-        <div class="sub">Panadería y Pastelería Dayane</div>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo">🍞</div>
+        <div class="titles">
+          <h1>Panel de Administrador</h1>
+          <div class="sub">Panadería y Pastelería Dayane</div>
+        </div>
       </div>
+
+      <!-- Toggle + botón hamburguesa -->
+      <input type="checkbox" id="nav-toggle" aria-hidden="true">
+      <label for="nav-toggle" class="burger" aria-label="Abrir menú" aria-controls="drawer" aria-expanded="false">
+        <span class="bars"></span>
+      </label>
+
+      <!-- Overlay + Drawer -->
+      <div class="overlay"></div>
+      <nav id="drawer" class="drawer" aria-label="Navegación principal">
+        <div class="drawer-head">
+          <div class="mini">🍞</div>
+          <div>
+            <strong>Hola, {{ auth()->user()->name }}</strong><br>
+            <small>Administrador</small>
+          </div>
+        </div>
+     <div class="drawer-nav">
+      <!-- Nuevo botón regresar que solo cierra el menú -->
+      <label for="nav-toggle" class="close-drawer">
+        <span class="emoji">⬅️</span> Regresar
+      </label>
+
+      <a href="{{ route('productos.index') }}"><span class="emoji">🥐</span> Gestionar productos</a>
+      <a href="{{ route('empleado.panel') }}"><span class="emoji">👩‍🍳</span> Ver Panel Empleado</a>
+      <a href="{{ route('cliente.inicio') }}"><span class="emoji">🛍️</span> Ver Página Cliente</a>
+
+      <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit"><span class="emoji">🚪</span> Cerrar sesión</button>
+      </form>
     </div>
+
   </header>
 
-  <main role="main">
-    <section class="card" aria-labelledby="bienvenida">
-      <div class="card-head">
-        <p id="bienvenida">Bienvenido, <span class="hi">{{ auth()->user()->name }}</span>.</p>
-      </div>
-
-      <div class="grid" role="list">
-        <div class="tile" role="listitem">
-          <a href="{{ route('productos.index') }}" aria-label="Gestionar productos">
-            <div class="emoji">🥐</div>
-            Gestionar productos
-          </a>
-        </div>
-
-        <div class="tile" role="listitem">
-          <a href="{{ route('empleado.panel') }}" aria-label="Ver Panel Empleado">
-            <div class="emoji">👩‍🍳</div>
-            Ver Panel Empleado
-          </a>
-        </div>
-
-        <div class="tile" role="listitem">
-          <a href="{{ route('cliente.inicio') }}" aria-label="Ver Página Cliente">
-            <div class="emoji">🛍️</div>
-            Ver Página Cliente
-          </a>
-        </div>
-      </div>
-
-      <div class="actions">
-        <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" aria-label="Cerrar sesión">Cerrar sesión</button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    © {{ date('Y') }} Panadería y Pastelería Dayane — Panel de Administración
-  </footer>
+  <!-- Página sin contenido adicional, solo el header con el menú -->
 </body>
 </html>

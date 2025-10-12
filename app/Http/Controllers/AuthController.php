@@ -7,50 +7,44 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
+
 {
     public function showLogin()
     {
         return view('auth.login'); // tu blade
     }
-
+   
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email'    => ['required','email'],
-            'password' => ['required','string'],
-            'role'     => ['required','in:admin,empleado,cliente'],
-        ]);
+{
+    // Validar nombre, correo y contraseña
+    $credentials = $request->validate([
+        'name'     => ['required', 'string'],
+        'email'    => ['required','email'],
+        'password' => ['required','string'],
+    ]);
 
-        // Intento de autenticación sin rol
-        if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']], $request->boolean('remember'))) {
-            $request->session()->regenerate();
+    // Buscar el usuario por email
+    $user = \App\Models\User::where('email', $credentials['email'])->first();
 
-           
-           /** @var \App\Models\User $user */ 
-             $user = Auth::user();
+    // Verificar credenciales
+    if ($user && $user->name === $credentials['name'] && Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
+        $request->session()->regenerate();
 
-            // Seguridad extra: el rol seleccionado debe coincidir con el rol real
-            if ($user->role !== $credentials['role']) {
-                Auth::logout();
-                return back()
-                    ->withErrors(['role' => 'El rol seleccionado no coincide con tu cuenta.'])
-                    ->onlyInput('email');
-            }
-
-            // Redirección por rol
-            if ($user->isAdmin()) {
-                return redirect()->intended('/admin/dashboard');
-            }
-            if ($user->isEmpleado()) {
-                return redirect()->intended('/empleado/panel');
-            }
-            return redirect()->intended('/cliente/inicio');
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->intended(route('admin.dashboard'));
+            case 'empleado':
+                return redirect()->intended(route('empleado.panel'));
+            default:
+                return redirect()->intended(route('cliente.inicio'));
         }
-
-        return back()->withErrors([
-            'email' => 'Credenciales inválidas.',
-        ])->onlyInput('email');
     }
+
+    return back()->withErrors([
+        'email' => 'Credenciales inválidas.',
+    ])->onlyInput('email');
+}
+
 
     public function logout(Request $request)
     {
@@ -58,5 +52,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/login');
-    }
+    }   
+
 }

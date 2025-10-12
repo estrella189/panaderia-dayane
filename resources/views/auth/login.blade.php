@@ -35,7 +35,7 @@
             padding-bottom: 0.75rem;
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 0.75rem 1rem;
             margin-bottom: 1rem;
@@ -47,7 +47,7 @@
             font-size: 1rem;
         }
 
-        input:focus, select:focus {
+        input:focus {
             border-color: #8b6b3d;
             box-shadow: 0 0 0 0.25rem rgba(139, 107, 61, 0.2);
             outline: none;
@@ -100,6 +100,10 @@
         <h2>Inicio de Sesión</h2>
         <form action="{{ route('login') }}" method="POST">
             @csrf
+             <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="name" name="name" placeholder="Ingrese su nombre" required>
+            </div>
             <div class="form-group">
                 <label for="email">Correo electrónico</label>
                 <input type="email" name="email" placeholder="Ingrese su correo" required>
@@ -108,15 +112,6 @@
                 <label for="password">Contraseña</label>
                 <input type="password" name="password" placeholder="Ingrese su contraseña" required>
             </div>
-         <div class="form-group">
-        <label for="role">Tipo de usuario</label>
-        <select name="role" required>
-            <option value="">Seleccione un rol</option>
-            <option value="admin">Administrador</option>
-            <option value="empleado">Empleado</option>
-            <option value="cliente">Cliente</option>
-        </select>
-        </div>
             <button type="submit">Iniciar sesión</button>
         </form>
     </div>
