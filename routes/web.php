@@ -98,3 +98,20 @@ Route::middleware(['auth', 'can:view-empleado-panel'])->group(function () {
 Route::middleware(['auth', 'can:view-cliente-panel'])->group(function () {
     Route::get('/cliente', [ClienteController::class, 'panel'])->name('cliente.inicio');
 });
+
+Route::get('/Rollos y Variedades', function () {
+    return view('Rollos y Variedades');
+});
+Route::get('/productos de temporada', function () {
+    return view('productos de temporada');
+});
+Route::get('/pasteles de chocolate', function () {
+    return view('pasteles de chocolate');
+});
+Route::get('/Para Eventos', function () {
+    return view('Para Eventos');
+});
+
+Route::get('/pasteles de frutas', function () {
+    return view('pasteles de frutas');
+});
