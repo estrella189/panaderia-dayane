@@ -115,3 +115,49 @@ Route::get('/Para Eventos', function () {
 Route::get('/pasteles de frutas', function () {
     return view('pasteles de frutas');
 });
+
+
+use App\Http\Controllers\PedidoController;
+
+Route::get('/catalogo', [ProductoController::class, 'catalogo'])->name('catalogo');
+
+// Crear pedido (SOLO logueados)
+Route::post('/pedidos', [PedidoController::class, 'store'])
+    ->middleware('auth')
+    ->name('pedidos.store');
+
+
+Route::middleware(['auth'])->group(function () {
+  Route::post('/pedidos/crear-rapido', [PedidoController::class, 'crearRapido'])->name('pedidos.crear_rapido');
+  Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+  Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
+});
+
+// Catálogos por categoría
+Route::get('/pasteles/{categoria}', [ProductoController::class, 'index'])
+     ->name('productos.publico');
+
+// Mis pedidos del cliente
+Route::middleware('auth')->group(function () {
+    Route::get('/mis-pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
+});
+
+
+// Cliente logueado puede ver chocolate/eventos/temporada
+Route::middleware('auth')->group(function () {
+    Route::get('/pasteles/{categoria}', [ProductoController::class, 'publicoPorCategoria'])
+        ->name('productos.publico');
+    Route::get('/catalogo', [ProductoController::class, 'catalogo'])
+        ->name('catalogo');
+});
+
+// CRUD solo admin
+Route::middleware(['auth','role:admin'])->group(function () {
+    Route::get('/admin/productos', [ProductoController::class, 'index'])->name('productos.index');
+    Route::get('/admin/productos/create', [ProductoController::class, 'create'])->name('productos.create');
+    Route::post('/admin/productos', [ProductoController::class, 'store'])->name('productos.store');
+    Route::get('/admin/productos/{id}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
+    Route::put('/admin/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
+    Route::delete('/admin/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+});

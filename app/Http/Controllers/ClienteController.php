@@ -1,11 +1,22 @@
 <?php
 
-// app/Http/Controllers/ClienteController.php
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
 
-class ClienteController extends Controller {
-    public function panel() {
-        return view('cliente.inicio'); // tu vista simple para cliente
+use App\Models\Pedido;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // <-- IMPORTANTE
+
+class ClienteController extends Controller
+{
+    public function panel()
+    {
+        $ultimo = Pedido::where('user_id', Auth::id())  // <- usa el facade
+            ->latest('id')                              // explícita la columna
+            ->first();
+
+        return view('cliente.inicio', [
+            'ultimoPedido' => $ultimo,
+        ]);
     }
 }
+

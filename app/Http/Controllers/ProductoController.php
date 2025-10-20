@@ -3,42 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;  
+use Illuminate\Support\Facades\Auth;
 use App\Models\productos;
 use App\Models\categorias;
-use Illuminate\Support\Facades\Route;
-
 
 class ProductoController extends Controller
 {
-    public function __construct()
+    // ==== CATÁLOGO PÚBLICO (requiere login, pero NO rol admin) ====
+    public function publicoPorCategoria(string $categoria)
     {
-        // Proteger TODO el CRUD para solo ADMIN (sin tocar Kernel)
-        $this->middleware(function ($request, $next) {
-            /** @var \App\Models\User|null $u */
-            $u = Auth::user();
-            if (!Auth::check() || !$u || $u->role !== 'admin') {
-                abort(403);
-            }
-            return $next($request);
+        // Si por ahora son vistas estáticas con imágenes:
+        return view(match ($categoria) {
+        'chocolate' => 'pasteles.chocolate',
+        'frutas'    => 'pasteles.frutas',
+        'eventos'   => 'pasteles.eventos',
+        'temporada' => 'pasteles.temporada',
+        'rollos'    => 'pasteles.rollos',  
+            default     => abort(404),
         });
     }
 
-    // Listar productos
+    public function catalogo()
+    {
+        $productos = productos::orderBy('Nombre')->get();
+        return view('productos.catalogo', compact('productos'));
+    }
+
+    /* ======== CRUD (ADMIN) ======== */
     public function index()
     {
         $productos = productos::with('categoria')->get();
         return view('productos.index', compact('productos'));
     }
 
-    // Form crear
     public function create()
     {
         $categorias = categorias::all();
         return view('productos.create', compact('categorias'));
     }
 
-    // Guardar
     public function store(Request $request)
     {
         $request->validate([
@@ -55,7 +58,6 @@ class ProductoController extends Controller
             ->with('success', 'Producto agregado correctamente.');
     }
 
-    // Form editar
     public function edit($id)
     {
         $producto   = productos::findOrFail($id);
@@ -63,7 +65,6 @@ class ProductoController extends Controller
         return view('productos.edit', compact('producto', 'categorias'));
     }
 
-    // Actualizar
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -81,7 +82,6 @@ class ProductoController extends Controller
             ->with('success', 'Producto actualizado correctamente.');
     }
 
-    // Eliminar
     public function destroy($id)
     {
         $producto = productos::findOrFail($id);

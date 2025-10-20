@@ -29,9 +29,7 @@
       justify-content:space-between; padding:16px 22px;
       box-shadow:0 8px 22px rgba(0,0,0,.15);
     }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-    }
+    .brand{ display:flex; gap:10px; align-items:center; }
     .brand .logo{
       width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
       background:#ffffff20; border:1px solid #ffffff35; font-size:1.2rem;
@@ -39,7 +37,7 @@
     header h1{ margin:0; font-size:1.4rem; letter-spacing:.3px; font-weight:800 }
     header .sub{opacity:.9; margin-top:2px; font-size:.9rem; letter-spacing:.2px}
 
-    /* Botón regresar */
+    /* Botón regresar (solo si admin) */
     .back-btn{
       background:#ffffff18; color:#fff; text-decoration:none;
       border:1px solid #ffffff30; border-radius:10px;
@@ -50,7 +48,7 @@
     .back-btn:hover{background:#ffffff28; transform:translateY(-1px)}
 
     /* ===== Contenido principal ===== */
-    main{ width:min(880px, 92%); margin:42px auto; }
+    main{ width:min(980px, 92%); margin:42px auto; display:grid; gap:18px; }
     .card{
       background:var(--glass);
       backdrop-filter:saturate(1.15) blur(8px);
@@ -69,24 +67,40 @@
     .card-head p{ margin:0; font-size:1.05rem }
     .hi{ font-weight:800 }
 
-    .body{
-      padding:26px 22px; display:flex; align-items:center; justify-content:center;
-    }
-    .chip{
-      display:inline-flex; align-items:center; gap:10px;
-      background:#fff; border:1px solid var(--line); border-radius:999px;
-      padding:10px 14px; font-weight:700; color:var(--brand);
-      box-shadow:0 10px 22px rgba(0,0,0,.06);
-    }
-    .chip .emoji{
-      width:36px; height:36px; display:grid; place-items:center;
-      font-size:1.2rem; background:#f7ede3; border:1px solid var(--line); border-radius:10px;
-    }
+    .body{ padding:22px; }
 
-    /* Botón cerrar sesión */
+    /* Quick actions */
+    .quick{
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:12px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:12px 16px; border-radius:12px; font-weight:800; text-decoration:none; cursor:pointer;
+      border:1px solid var(--line);
+      box-shadow:0 10px 22px rgba(0,0,0,.06);
+      transition:transform .12s ease, filter .18s ease, background .2s ease;
+      color:#fff;
+    }
+    .btn-brand{ background:linear-gradient(180deg, var(--brand), #6f4b30); }
+    .btn-brand2{ background:linear-gradient(180deg, var(--brand-2), #8e6949); }
+    .btn-accent{ background:linear-gradient(180deg, var(--accent), #c86635); }
+    .btn-light{
+      background:#fff; color:var(--brand); border-color:#eadfce;
+    }
+    .btn:hover{ filter:brightness(.98); transform:translateY(-1px) }
+
+    /* Bloque “último pedido” */
+    .order{
+      background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px 16px;
+      display:grid; gap:6px;
+    }
+    .order small{ color:var(--muted) }
+
+    /* Cerrar sesión */
     .actions{ text-align:center; padding:0 22px 26px }
     form{ display:inline }
-    button{
+    .logout{
       appearance:none; border:none; cursor:pointer;
       background:linear-gradient(180deg, var(--accent), #c86635);
       color:#fff; font-weight:800; letter-spacing:.3px;
@@ -94,19 +108,15 @@
       box-shadow:0 10px 22px rgba(215,122,73,.28);
       transition:transform .12s ease, filter .18s ease;
     }
-    button:hover{ filter:brightness(.97) }
-    button:active{ transform:translateY(1px) }
+    .logout:hover{ filter:brightness(.97) }
+    .logout:active{ transform:translateY(1px) }
 
     /* Pie */
-    footer{
-      text-align:center; color:var(--muted); padding:18px 12px; margin-bottom:8px;
-    }
+    footer{ text-align:center; color:var(--muted); padding:18px 12px; margin-bottom:8px; }
 
     /* Responsive */
     @media (max-width:520px){
       header h1{font-size:1.3rem}
-      .chip{ font-size:.95rem }
-      .chip .emoji{ width:32px; height:32px; font-size:1.05rem }
     }
   </style>
 </head>
@@ -120,30 +130,55 @@
       </div>
     </div>
 
-@if(auth()->user()->role === 'admin')
-  <a href="{{ url()->previous() }}" class="back-btn">⬅️ Regresar</a>
-@endif
-
+    @if(auth()->user()->role === 'admin')
+      <a href="{{ url()->previous() }}" class="back-btn">⬅️ Regresar</a>
+    @endif
   </header>
 
   <main role="main">
+    {{-- Tarjeta de bienvenida --}}
     <section class="card" aria-labelledby="bienvenida">
       <div class="card-head">
         <h2 id="bienvenida">¡Hola!</h2>
         <p>Bienvenido, <span class="hi">{{ auth()->user()->name }}</span>.</p>
       </div>
 
-      <div class="body">
-        <div class="chip">
-          <div class="emoji">🥐</div>
-          <span>Disfruta tu experiencia como cliente</span>
+      <div class="body" style="display:grid; gap:18px">
+        {{-- Acciones rápidas para pedir --}}
+        <div class="quick">
+          {{-- Si definiste una ruta general de catálogo, úsala. Si no, deja las categorías directas. --}}
+          {{-- <a href="{{ route('catalogo') }}" class="btn btn-brand">🛒 Ver catálogo y pedir</a> --}}
+
+          <a href="{{ route('productos.publico', 'chocolate') }}" class="btn btn-brand">🍫 Pasteles de chocolate</a>
+          <a href="{{ route('productos.publico', 'eventos') }}" class="btn btn-brand2">🎉 Pasteles para eventos</a>
+          <a href="{{ route('productos.publico', 'temporada') }}" class="btn btn-accent">🍁 Pasteles de temporada</a>
+          <a href="{{ route('productos.publico', 'rollos') }}" class="btn btn-accent">🍥 Rollos y variedades</a>
+          <a href="{{ route('productos.publico', 'frutas') }}" class="btn btn-brand2">🍓 Pasteles de frutas</a>
+          <a href="{{ route('pedidos.index') }}" class="btn btn-light">📦 Mis pedidos</a>
+        </div>
+
+        {{-- Último pedido (opcional) --}}
+        @isset($ultimoPedido)
+          <div class="order">
+            <strong>Tu último pedido</strong>
+            <small>#{{ $ultimoPedido->id }} • Estado: {{ ucfirst($ultimoPedido->estado) }} •
+              Entrega: {{ $ultimoPedido->fecha_entrega ?? '—' }}</small>
+            <div>
+              <a href="{{ route('pedidos.show', $ultimoPedido) }}" class="btn btn-light" style="margin-top:6px;">Ver detalle</a>
+            </div>
+          </div>
+        @endisset
+
+        {{-- Mensaje amable --}}
+        <div style="text-align:center; color:var(--muted);">
+          ¿No encuentras un diseño? Haz tu pedido y escribe el mensaje que quieres en tu pastel. 💌
         </div>
       </div>
 
       <div class="actions">
         <form action="{{ route('logout') }}" method="POST">
           @csrf
-          <button type="submit" aria-label="Cerrar sesión">🚪 Cerrar sesión</button>
+          <button type="submit" class="logout">Cerrar sesión</button>
         </form>
       </div>
     </section>

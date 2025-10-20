@@ -187,33 +187,33 @@ header h1 {
   <!-- Galería -->
   <main>
     <section class="products">
-      <article class="product-card"><img src="boda.jpg" alt=""></article>
-      <article class="product-card"><img src="evento.jpg" alt=""></article>
-      <article class="product-card"><img src="evento2.jpg" alt=""></article>
-      <article class="product-card"><img src="fiesta.jpg" alt=""></article>
-      <article class="product-card"><img src="fest3.jpg" alt=""></article>
-      <article class="product-card"><img src="fiesta2.jpg" alt=""></article>
-      <article class="product-card"><img src="aniversario.jpg" alt=""></article>
-      <article class="product-card"><img src="quequitos.jpg" alt=""></article>
-      <article class="product-card"><img src="evento3.jpg" alt=""></article>
-      <article class="product-card"><img src="evento4.jpg" alt=""></article>
-      <article class="product-card"><img src="evento5.jpg" alt=""></article>
-      <article class="product-card"><img src="evento6.jpg" alt=""></article>
-      <article class="product-card"><img src="evento7.jpg" alt=""></article>
-      <article class="product-card"><img src="evento8.jpg" alt=""></article>
-      <article class="product-card"><img src="evento9.jpg" alt=""></article>
-      <article class="product-card"><img src="evento10.jpg" alt=""></article>
-      <article class="product-card"><img src="evento11.jpg" alt=""></article>
-      <article class="product-card"><img src="evento12.jpg" alt=""></article>
-      <article class="product-card"><img src="evento13.jpg" alt=""></article>
-      <article class="product-card"><img src="evento14.jpg" alt=""></article>
-      <article class="product-card"><img src="evento15.jpg" alt=""></article>
-      <article class="product-card"><img src="felicidadesalan.jpg" alt=""></article>
-      <article class="product-card"><img src="felicidadesian.jpg" alt=""></article>
-      <article class="product-card"><img src="felizcumplerosasazulles.jpg" alt=""></article>
-      <article class="product-card"><img src="felizcumple.jpg" alt=""></article>
-      <article class="product-card"><img src="pastel de pony.jpg" alt=""></article>
-      <article class="product-card"><img src="pstelbely.jpg" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/boda.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento2.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/fiesta.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/fest3.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/fiesta2.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/aniversario.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/quequitos.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento3.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento4.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento5.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento6.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento7.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento8.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento9.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento10.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento11.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento12.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento13.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento14.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/evento15.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felicidadesalan.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felicidadesian.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felizcumplerosasazulles.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felizcumple.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pastel_de_pony.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pstelbely.jpg') }}" alt=""></article>
       <article class="product-card"><img src="quequitos colores.jpg" alt=""></article>
       <article class="product-card"><img src="pastelfrozen.jpg" alt=""></article>
       <article class="product-card"><img src="pastelmasha_oso.jpg" alt=""></article>
