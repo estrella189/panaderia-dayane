@@ -6,29 +6,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\productos;
 use App\Models\categorias;
+use Illuminate\Support\Str;
 
 class ProductoController extends Controller
 {
     // ==== CATÁLOGO PÚBLICO (requiere login, pero NO rol admin) ====
     public function publicoPorCategoria(string $categoria)
     {
-        // Si por ahora son vistas estáticas con imágenes:
-        return view(match ($categoria) {
-        'chocolate' => 'pasteles.chocolate',
-        'frutas'    => 'pasteles.frutas',
-        'eventos'   => 'pasteles.eventos',
-        'temporada' => 'pasteles.temporada',
-        'rollos'    => 'pasteles.rollos',  
-            default     => abort(404),
-        });
-    }
+         $slug = Str::slug(trim($categoria), '-'); // "Frutas/" -> "frutas", "pasteles-de-frutas" -> "pasteles-de-frutas"
 
-    public function catalogo()
-    {
-        $productos = productos::orderBy('Nombre')->get();
-        return view('productos.catalogo', compact('productos'));
-    }
+    $map = [
+        'chocolate'          => 'pasteles.chocolate',
+        'eventos'            => 'pasteles.eventos',
+        'temporada'          => 'pasteles.temporada',
+        'rollos'             => 'pasteles.rollos',
+        'frutas'             => 'pasteles.frutas',
+        'pasteles-de-frutas' => 'pasteles.frutas', // alias
+    ];
 
+    abort_unless(isset($map[$slug]), 404);
+    return view($map[$slug]);
+    }
+    
     /* ======== CRUD (ADMIN) ======== */
     public function index()
     {

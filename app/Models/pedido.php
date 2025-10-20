@@ -4,12 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pedido extends Model
+class pedido extends Model
 {
-    protected $fillable = ['user_id','fecha_entrega','notas','estado','total'];
+    protected $table = 'pedidos';
+
+    protected $fillable = [
+        'user_id', 'fecha_entrega', 'notas', 'estado', 'total',
+    ];
+
+    protected $casts = [
+        'fecha_entrega' => 'date',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function items()
     {
-        return $this->hasMany(Pedidoitem::class);
+        return $this->hasMany(PedidoItem::class);
     }
 }

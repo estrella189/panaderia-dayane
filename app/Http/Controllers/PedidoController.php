@@ -4,67 +4,113 @@ namespace App\Http\Controllers;
 
 use App\Models\Pedido;
 use App\Models\PedidoItem;
+use App\Models\Productos;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PedidoController extends Controller
 {
-    // Crea un pedido desde la tarjeta (usa producto_nombre de tus vistas)
+    public function __construct()
+    {
+        // Solo usuarios autenticados pueden hacer pedidos
+        $this->middleware('auth');
+    }
+
+    /**
+     * Método para crear pedidos rápidos desde la vista de pasteles
+     */
     public function crearRapido(Request $request)
     {
+        // Validación de los datos del formulario
         $data = $request->validate([
-            'producto_nombre' => ['required','string','max:150'],
-            'cantidad'       => ['required','integer','min:1'],
-            'fecha_entrega'  => ['nullable','date','after_or_equal:today'],
-            'mensaje_pastel' => ['nullable','string','max:255'],
-            'tamano'         => ['nullable','string','max:50'],
-            'sabor'          => ['nullable','string','max:50'],
+            'producto_nombre' => ['required', 'string', 'max:150'],
+            'cantidad'        => ['required', 'integer', 'min:1'],
+            'fecha_entrega'   => ['required', 'date'],
+            'notas'           => ['nullable', 'string', 'max:500'],
+            'tamanio'         => ['nullable', 'string', 'max:50'],
+            'sabor'           => ['nullable', 'string', 'max:50'],
         ]);
 
-        return DB::transaction(function () use ($data) {
+        $user = $request->user();
+
+        // Buscar el producto en la base de datos (opcional)
+        $producto = Productos::where('nombre', $data['producto_nombre'])->first();
+        $precio   = $producto->precio ?? 0;
+
+        // Crear el pedido y su ítem dentro de una transacción
+        return DB::transaction(function () use ($user, $data, $producto, $precio) {
+            $subtotal = $precio * $data['cantidad'];
+
+            // Crear el pedido principal
             $pedido = Pedido::create([
-                'user_id'       => Auth::id(),
-                'fecha_entrega' => $data['fecha_entrega'] ?? null,
-                'notas'         => $data['mensaje_pastel'] ?? null,
+                'user_id'       => $user->id,
+                'fecha_entrega' => $data['fecha_entrega'],
+                'notas'         => $data['notas'] ?? null,
                 'estado'        => 'pendiente',
-                'total'         => 0,
+                'total'         => $subtotal,
             ]);
 
+            // Crear el detalle del pedido (producto solicitado)
             PedidoItem::create([
-                'pedido_id'      => $pedido->id,
-                'producto_id'    => null,         // sin tabla productos
-                'cantidad'       => (int)$data['cantidad'],
-                'precio_unit'    => 0,            // si luego agregas precios, actualiza aquí
-                'personalizacion'=> [
-                    'nombre' => $data['producto_nombre'],
-                    'tamano' => $data['tamano'] ?? null,
-                    'sabor'  => $data['sabor']  ?? null,
-                ],
+                'pedido_id'        => $pedido->id,
+                'producto_id'      => $producto->id ?? null,
+                'producto_nombre'  => $data['producto_nombre'],
+                'cantidad'         => $data['cantidad'],
+                'tamanio'          => $data['tamanio'] ?? null,
+                'sabor'            => $data['sabor'] ?? null,
+                'precio_unitario'  => $precio,
+                'subtotal'         => $subtotal,
             ]);
 
-            // total = suma(cantidad * precio_unit)
-            $total = $pedido->items()->sum(DB::raw('cantidad * precio_unit'));
-            $pedido->update(['total' => $total]);
-
+            // Redirigir con mensaje de éxito
             return redirect()
-                ->route('pedidos.show', $pedido)
-                ->with('ok', '¡Tu pedido se creó con éxito! Estado: pendiente.');
+                ->back()
+                ->with('ok', '¡Tu pedido fue registrado exitosamente! #'.$pedido->id);
         });
     }
 
-    public function index()
+    /**
+     * Método genérico para pedidos con producto_id (si en el futuro lo usas)
+     */
+    public function store(Request $request)
     {
-        $pedidos = Pedido::where('user_id', Auth::id())
-            ->latest()->paginate(10);
+        $data = $request->validate([
+            'producto_id'   => ['required','integer','exists:productos,id'],
+            'cantidad'      => ['required','integer','min:1'],
+            'fecha_entrega' => ['required','date'],
+            'notas'         => ['nullable','string','max:500'],
+            'tamanio'       => ['nullable','string','max:50'],
+            'sabor'         => ['nullable','string','max:50'],
+        ]);
 
-        return view('pedidos.index', compact('pedidos'));
-    }
+        $user = $request->user();
+        $producto = Productos::findOrFail($data['producto_id']);
+        $precio = $producto->precio ?? 0;
 
-    public function show(Pedido $pedido)
-    {
-        abort_if($pedido->user_id !== Auth::id(), 403);
-        $pedido->load('items');
-        return view('pedidos.show', compact('pedido'));
+        return DB::transaction(function () use ($user, $data, $precio, $producto) {
+            $subtotal = $precio * $data['cantidad'];
+
+            $pedido = Pedido::create([
+                'user_id'       => $user->id,
+                'fecha_entrega' => $data['fecha_entrega'],
+                'notas'         => $data['notas'] ?? null,
+                'estado'        => 'pendiente',
+                'total'         => $subtotal,
+            ]);
+
+            PedidoItem::create([
+                'pedido_id'       => $pedido->id,
+                'producto_id'     => $producto->id,
+                'cantidad'        => $data['cantidad'],
+                'tamanio'         => $data['tamanio'] ?? null,
+                'sabor'           => $data['sabor'] ?? null,
+                'precio_unitario' => $precio,
+                'subtotal'        => $subtotal,
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('ok', '¡Tu pedido fue registrado exitosamente! #'.$pedido->id);
+        });
     }
 }

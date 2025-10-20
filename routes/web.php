@@ -148,8 +148,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/pasteles/{categoria}', [ProductoController::class, 'publicoPorCategoria'])
         ->name('productos.publico');
-    Route::get('/catalogo', [ProductoController::class, 'catalogo'])
-        ->name('catalogo');
 });
 
 // CRUD solo admin
@@ -161,3 +159,4 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::put('/admin/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
     Route::delete('/admin/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
 });
+
