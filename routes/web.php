@@ -119,8 +119,6 @@ Route::get('/pasteles de frutas', function () {
 
 use App\Http\Controllers\PedidoController;
 
-Route::get('/catalogo', [ProductoController::class, 'catalogo'])->name('catalogo');
-
 // Crear pedido (SOLO logueados)
 Route::post('/pedidos', [PedidoController::class, 'store'])
     ->middleware('auth')
@@ -144,7 +142,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-// Cliente logueado puede ver chocolate/eventos/temporada
+// Cliente logueado puede ver las categorias de los pasteles
 Route::middleware('auth')->group(function () {
     Route::get('/pasteles/{categoria}', [ProductoController::class, 'publicoPorCategoria'])
         ->name('productos.publico');

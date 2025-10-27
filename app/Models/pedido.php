@@ -23,6 +23,6 @@ class pedido extends Model
 
     public function items()
     {
-        return $this->hasMany(PedidoItem::class);
+        return $this->hasMany(PedidoItem::class, 'pedido_id');
     }
 }

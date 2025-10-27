@@ -4,24 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class categorias extends Model
 {
-    
-    use HasFactory;
-
     protected $table = 'categorias';
-    protected $primaryKey = 'IdCategoria';
-    public $timestamps = true;
+    protected $fillable = ['nombre','slug','parent_id'];
 
-    protected $fillable = [
-        'NombreCategoria',
-    ];
+    public function parent() {
+        return $this->belongsTo(categorias::class, 'parent_id');
+    }
 
-    public function productos()
-    {
-        return $this->hasMany(productos::class, 'IdCategoria', 'IdCategoria');
+    public function children() {
+        return $this->hasMany(categorias::class, 'parent_id');
+    }
+
+    public function productos() {
+        return $this->hasMany(Productos::class, 'categoria_id');
     }
 }
 

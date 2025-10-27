@@ -113,4 +113,5 @@ class PedidoController extends Controller
                 ->with('ok', '¡Tu pedido fue registrado exitosamente! #'.$pedido->id);
         });
     }
+    
 }

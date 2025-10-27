@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('Descripcion', 50)->nullable();
             $table->integer('Precio');
             $table->integer('Stock');
-            $table->foreignId('IdCategoria')->constrained('categorias','IdCategoria');
+            $table->foreignId('id')->constrained('categorias','id')->cascadeOnDelete();
             $table->timestamps();
         });
     }

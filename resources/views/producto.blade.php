@@ -271,10 +271,8 @@
             <summary>Otros Productos</summary>
             <div class="submenu">
                 <a href="leche.html">Leche</a>
-                <a href="coca.html">Coca-Cola</a>
-                <a href="joyas.html">Joyas</a>
-                <a href="refrescos.html">Refrescos</a>
-                <a href="abarrotes.html">Abarrotes</a>
+                <a href="coca.html">Coca-Cola y Refrescos</a>
+                <a href="hidratantes.html">Hidratantes</a>
             </div>
         </details>
 

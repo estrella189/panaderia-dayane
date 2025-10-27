@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('pedidos.app')
 @section('title','Detalle de pedido #'.$pedido->id)
 
 @section('content')
