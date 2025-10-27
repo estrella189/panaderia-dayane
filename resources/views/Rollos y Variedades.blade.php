@@ -179,9 +179,12 @@
   <!-- Galería -->
   <main>
     <section class="products">
-      <article class="product-card"><img src="rollo de mango.jpg" alt=""></article>
-      <article class="product-card"><img src="pay.jpg" alt=""></article>
-      <article class="product-card"><img src="fresa_nuez.jpg" alt=""></article>
+        <article class="product-card">
+        <img src="{{ asset('img/pasteles/rollos/fresa_nuez.jpg') }}" alt="">
+      </article>
+       <article class="product-card">
+        <img src="{{ asset('img/pasteles/rollos/rollo de mango.jpg') }}" alt="">
+      </article>
     </section>
   </main>
 </body>

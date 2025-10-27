@@ -179,15 +179,34 @@
   <!-- Galería -->
   <main>
     <section class="products">
-      <article class="product-card"><img src="madre.jpg" alt=""></article>
-      <article class="product-card"><img src="madre2.jpg" alt=""></article>
-      <article class="product-card"><img src="madre3.jpg" alt=""></article>
-      <article class="product-card"><img src="madre4.jpg" alt=""></article>
-      <article class="product-card"><img src="hallowen.jpg" alt=""></article>
-      <article class="product-card"><img src="happy.jpg" alt=""></article>
-      <article class="product-card"><img src="pastelcorazon.jpg" alt=""></article>
-      <article class="product-card"><img src="pasteldegirasol.jpg" alt=""></article>
-      <article class="product-card"><img src="pastel de rosales.jpg" alt=""></article>
+    
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/madre.jpg') }}" alt="">
+      </article>
+    <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/madre2.jpg') }}" alt="">
+      </article>
+       <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/madre3.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/madre4.jpg') }}" alt="">
+      </article>
+     <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/hallowen.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/happy.jpg') }}" alt="">
+      </article> 
+       <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/pastelcorazon.jpg') }}" alt="">
+      </article>
+        <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/pasteldegirasol.jpg') }}" alt="">
+      </article>
+     <article class="product-card">
+        <img src="{{ asset('img/pasteles/temporada/pastel de rosales.jpg') }}" alt="">
+      </article>
     </section>
   </main>
 </body>
