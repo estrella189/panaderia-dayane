@@ -18,7 +18,6 @@ class AuthController extends Controller
 {
     // Validar nombre, correo y contraseña
     $credentials = $request->validate([
-        'name'     => ['required', 'string'],
         'email'    => ['required','email'],
         'password' => ['required','string'],
     ]);
@@ -26,9 +25,11 @@ class AuthController extends Controller
     // Buscar el usuario por email
     $user = \App\Models\User::where('email', $credentials['email'])->first();
 
-    // Verificar credenciales
-    if ($user && $user->name === $credentials['name'] && Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-        $request->session()->regenerate();
+  // Intentar iniciar sesión
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            $user = Auth::user();
 
         switch ($user->role) {
             case 'admin':

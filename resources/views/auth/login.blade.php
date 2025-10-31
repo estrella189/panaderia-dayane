@@ -100,10 +100,6 @@
         <h2>Inicio de Sesión</h2>
         <form action="{{ route('login') }}" method="POST">
             @csrf
-             <div class="form-group">
-                <label for="name">Nombre</label>
-                <input type="name" name="name" placeholder="Ingrese su nombre" required>
-            </div>
             <div class="form-group">
                 <label for="email">Correo electrónico</label>
                 <input type="email" name="email" placeholder="Ingrese su correo" required>
