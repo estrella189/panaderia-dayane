@@ -122,7 +122,7 @@
         </h1>
     </header>
     <nav class="nav">
-        <a href="productos.html">Productos</a>
+        <a href="producto.html">Productos</a>
     </nav>
 
      <main>

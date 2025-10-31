@@ -151,7 +151,7 @@
         <a href="index.html">Inicio</a>
         <a href="Nosotros.html">Nosotros</a>
         <a href= "Mision y Vision.html">Misión y Visión</a>
-        <a href="productos.html">Productos</a>
+        <a href="producto.html">Productos</a>
         <a href="contacto.html">Contacto</a>
       
     </nav>

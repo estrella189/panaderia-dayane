@@ -139,11 +139,11 @@
 
     <!-- barra de navegación -->
     <nav class="nav">
-        <a href="index">Inicio</a>
-        <a href="Nosotros">Nosotros</a>
-        <a href="Mision y Vision">Misión y Visión</a>
-        <a href="producto">Productos</a>
-        <a href="contacto">Contacto</a>
+        <a href="index.html">Inicio</a>
+        <a href="Nosotros.html">Nosotros</a>
+        <a href="Mision y Vision.html">Misión y Visión</a>
+        <a href="producto.html">Productos</a>
+        <a href="contacto.html">Contacto</a>
     </nav>
 
     <!-- Misión y Visión -->

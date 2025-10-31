@@ -184,7 +184,7 @@
         <a href="index">Inicio</a>
         <a href="Nosotros">Nosotros</a>
         <a href="Mision y Vision">Misión y Visión</a>
-        <a href="productos">Productos</a>
+        <a href="producto">Productos</a>
         <a href="contacto">Contacto</a>
 
         <!-- 👤 Botón de inicio de sesión con emoji -->

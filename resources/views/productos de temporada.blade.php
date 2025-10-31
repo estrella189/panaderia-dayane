@@ -173,7 +173,7 @@
   <!-- Nav -->
   <nav>
     <a href="index.html">Inicio</a>
-    <a href="productos.html">Productos</a>
+    <a href="producto.html">Productos</a>
   </nav>
 
   <!-- Galería -->

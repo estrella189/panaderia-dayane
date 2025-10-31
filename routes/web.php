@@ -49,47 +49,35 @@ Route::get('/cliente/inicio', function () {
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.form');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
-Route::get('/index', function () {
-    return view('index');
-});
+Route::get('/index', fn() => view('index'))->name('index');
+Route::get('/index.html', fn() => redirect('/index'));
 
-Route::get('/Nosotros', function () {
-    return view('Nosotros');
-});
+Route::get('/Nosotros', fn() => view('Nosotros'))->name('Nosotros');
+Route::get('/Nosotros.html', fn() => redirect('/Nosotros'));
 
-Route::get('/Mision y Vision', function () {
-    return view('Mision y Vision');
-});
+Route::get('Mision y Vision', fn() => view('Mision y Vision'))->name('Mision y Vision');
+Route::get('Mision y Vision.html', fn() => redirect('/Mision y Vision'));
 
-Route::get('/producto', function () {
-    return view('producto');
-});
+Route::get('/producto', fn() => view('producto'))->name('producto');
+Route::get('/producto.html', fn() => redirect('/producto'));
 
-Route::get('/panes_dulces', function () {
-    return view('panes_dulces');
-});
+Route::get('/panes_dulces',fn() => view('panes_dulces'))->name('panes_dulces');
+Route::get('/panes_dulces.html', fn() => redirect('/panes_dulces'));
 
-Route::get('/panes_salados', function () {
-    return view('panes_salados');
-});
+Route::get('/panes_salados', fn() => view('panes_salados'))->name('panes_salados');
+Route::get('/panes_salados.html', fn() => redirect('/panes_salados'));
 
-Route::get('/otros', function () {
-    return view('otros');
-});
-Route::get('/contacto', function () {
-    return view('contacto');
-});
+Route::get('/otros', fn() => view('otros'))->name('otros');
+Route::get('/otros.html', fn() => redirect('/otros'));
 
-
+Route::get('/contacto', fn() => view('contacto'))->name('contacto');
+Route::get('/contacto.html', fn() => redirect('/contacto'));
 
 
 Route::get('/admin/dashboard', function () {
     abort_unless(Auth::check() && Auth::user()?->role === 'admin', 403);
     return view('admin.dashboard');
 })->name('admin.dashboard');
-
-Route::resource('productos', ProductoController::class)->names('productos');
-
 
 Route::middleware(['auth', 'can:view-empleado-panel'])->group(function () {
     Route::get('/empleado', [EmpleadoController::class, 'panel'])->name('empleado.panel');
@@ -99,22 +87,20 @@ Route::middleware(['auth', 'can:view-cliente-panel'])->group(function () {
     Route::get('/cliente', [ClienteController::class, 'panel'])->name('cliente.inicio');
 });
 
-Route::get('/Rollos y Variedades', function () {
-    return view('Rollos y Variedades');
-});
-Route::get('/productos de temporada', function () {
-    return view('productos de temporada');
-});
-Route::get('/pasteles de chocolate', function () {
-    return view('pasteles de chocolate');
-});
-Route::get('/Para Eventos', function () {
-    return view('Para Eventos');
-});
+Route::get('/Rollos y Variedades', fn() => view('Rollos y Variedades'))->name('Rollos y Variedades');
+Route::get('/Rollos y Variedades.html', fn() => redirect('/Rollos y Variedades'));
 
-Route::get('/pasteles de frutas', function () {
-    return view('pasteles de frutas');
-});
+Route::get('/productos de temporada', fn() => view('productos de temporada'))->name('productos de temporada');
+Route::get('/productos de temporada.html', fn() => redirect('/productos de temporada'));
+
+Route::get('/pasteles de chocolate', fn() => view('pasteles de chocolate'))->name('pasteles de chocolate');
+Route::get('/pasteles de chocolate.html', fn() => redirect('/pasteles de chocolate'));
+
+Route::get('/Para Eventos', fn() => view('Para Eventos'))->name('Para Eventos');
+Route::get('/Para Eventos.html', fn() => redirect('/Para Eventos'));
+
+Route::get('/pasteles de frutas', fn() => view('pasteles de frutas'))->name('pasteles de frutas');
+Route::get('/pasteles de frutas.html', fn() => redirect('/pasteles de frutas'));
 
 
 use App\Http\Controllers\PedidoController;
