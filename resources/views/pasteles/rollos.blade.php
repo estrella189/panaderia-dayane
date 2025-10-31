@@ -40,23 +40,6 @@
       gap:12px;
       font-weight:700;
     }
-    nav{
-      background:var(--cafe-medio);
-      padding:10px 0;
-      box-shadow:var(--sombra);
-      text-align:center;
-    }
-    nav a{
-      text-decoration:none;
-      color:#fff;
-      padding:10px 18px;
-      font-size:18px;
-      border-radius:999px;
-      transition:.2s;
-      display:inline-block;
-      margin:0 6px;
-    }
-    nav a:hover{background-color:rgba(255,255,255,.15);}
     main{max-width:1100px;margin:28px auto 60px;padding:0 16px;}
     section.products{
       display:grid;
@@ -118,11 +101,6 @@
   <header>
     <h1>Rollos y Variedades - Dayane</h1>
   </header>
-
-  <nav>
-    <a href="{{ url('index.html') }}">Inicio</a>
-    <a href="{{ url('productos.html') }}">Productos</a>
-  </nav>
 
   <main>
     <section class="products">

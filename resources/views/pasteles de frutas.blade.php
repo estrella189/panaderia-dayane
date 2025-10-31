@@ -179,15 +179,36 @@
   <!-- Galería -->
   <main>
     <section class="products">
-      <article class="product-card"><img src="pastel de frutas.jpg" alt=""></article>
-      <article class="product-card"><img src="frutas1.jpg" alt=""></article>
-      <article class="product-card"><img src="pastel de frutas cruz.jpg" alt=""></article>
-      <article class="product-card"><img src="pastel de fresa con granola.jpg" alt=""></article>
-      <article class="product-card"><img src="pastel tres leches mango.jpg" alt=""></article>
-      <article class="product-card"><img src="fresasfileteada.jpg" alt=""></article>
-      <article class="product-card"><img src="pstel tres filas_frutas.jpg" alt=""></article>
-      <article class="product-card"><img src="nuezcondurazno.jpg" alt=""></article>
-      <article class="product-card"><img src="frutas kiwi.jpg" alt=""></article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/fresasfileteada.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/frutas kiwi.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/frutas1.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/nuezcondurazno.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/pastel de fresa con granola.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/pastel de frutas cruz.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/pastel de mango.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/pastel de frutas.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/pastel tres leches mango.jpg') }}" alt="">
+      </article>
+      <article class="product-card">
+        <img src="{{ asset('img/pasteles/frutas/pstel tres filas_frutas.jpg') }}" alt="">
+      </article>
     </section>
   </main>
 </body>

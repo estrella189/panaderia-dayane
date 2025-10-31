@@ -156,7 +156,7 @@
           <div class="submenu">
             <a href="Rollos y Variedades.html">Rollos y Variedades</a>
             <a href="productos de temporada.html">Productos temporada</a>
-            <a href="pasteles de chocolates.html">Pasteles de chocolate</a>
+            <a href="pasteles de chocolate.html">Pasteles de chocolate</a>
             <a href="Para Eventos.html">Para Eventos</a>
             <a href="pasteles de frutas.html">Pasteles de fruta</a>
           </div>

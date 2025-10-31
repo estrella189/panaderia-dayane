@@ -11,9 +11,6 @@
     body{ margin:0; font-family:'Trebuchet MS','Lucida Sans Unicode','Lucida Grande','Lucida Sans',Arial,sans-serif; background:#f9f6f3; color:var(--texto); }
     header{ background:linear-gradient(135deg, #956644, #7b5436); color:#fff; padding:28px 18px; display:flex; justify-content:center; align-items:center; text-align:center; box-shadow:var(--sombra); }
     header h1{ margin:0; font-size:clamp(22px, 3.2vw, 36px); display:flex; align-items:center; gap:12px; font-weight:700; }
-    nav{ background: var(--cafe-medio); padding:10px 0; box-shadow:var(--sombra); text-align:center; }
-    nav a{ text-decoration:none; color:#fff; padding:10px 18px; font-size:18px; border-radius:999px; transition:.2s; display:inline-block; margin:0 6px; }
-    nav a:hover{ background-color:rgba(255,255,255,.15); }
     main{ max-width:1100px; margin:28px auto 60px; padding:0 16px; }
     section.products{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:22px; padding:18px 0; }
     .product-card{ background:#fff; border-radius:var(--radius-xl); overflow:hidden; box-shadow:var(--sombra); transition:.2s; }
@@ -34,11 +31,6 @@
   <header>
     <h1>Pasteles de Temporada - Dayane </h1>
   </header>
-
-  <nav>
-    <a href="index.html">Inicio</a>
-    <a href="productos.html">Productos</a>
-  </nav>
 
   <main>
     <section class="products">
