@@ -23,7 +23,6 @@ class AuthController extends Controller
     ]);
 
 
-
   // Intentar iniciar sesión
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
