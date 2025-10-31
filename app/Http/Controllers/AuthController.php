@@ -22,8 +22,7 @@ class AuthController extends Controller
         'password' => ['required','string'],
     ]);
 
-    // Buscar el usuario por email
-    $user = \App\Models\User::where('email', $credentials['email'])->first();
+
 
   // Intentar iniciar sesión
         if (Auth::attempt($credentials)) {
