@@ -12,6 +12,7 @@ use App\Http\Controllers\ClienteController;
 
 
 
+
 // Ruta para insertar datos desde los archivos JSON
 Route::get('/recuperar-datos', [PanaderiaDB::class, 'recuperarBD']);
 
@@ -134,13 +135,96 @@ Route::middleware('auth')->group(function () {
         ->name('productos.publico');
 });
 
-// CRUD solo admin
-Route::middleware(['auth','role:admin'])->group(function () {
-    Route::get('/admin/productos', [ProductoController::class, 'index'])->name('productos.index');
-    Route::get('/admin/productos/create', [ProductoController::class, 'create'])->name('productos.create');
-    Route::post('/admin/productos', [ProductoController::class, 'store'])->name('productos.store');
-    Route::get('/admin/productos/{id}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
-    Route::put('/admin/productos/{id}', [ProductoController::class, 'update'])->name('productos.update');
-    Route::delete('/admin/productos/{id}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+
+
+// Cliente logueado puede ver las categorías de los pasteles
+Route::middleware('auth')->group(function () {
+    Route::get('/pasteles/{categoria}', [ProductoController::class, 'publicoPorCategoria'])
+        ->name('productos.publico');
 });
 
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+
+    // DASHBOARD
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+        if ($user->role !== 'admin') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+    // PRODUCTOS
+    Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
+    Route::get('/productos/create', [ProductoController::class, 'create'])->name('productos.create');
+    Route::post('/productos', [ProductoController::class, 'store'])->name('productos.store');
+    Route::get('/productos/{producto}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
+    Route::put('/productos/{producto}', [ProductoController::class, 'update'])->name('productos.update');
+    Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+});
+
+
+Route::middleware(['auth'])->prefix('empleado')->name('empleado.')->group(function () {
+
+    // /empleado  (entrada principal)
+    Route::get('/', function () {
+        $user = Auth::user();
+        if ($user->role !== 'empleado') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+        return view('empleado.panel');
+    })->name('panel');
+
+    // /empleado/panel (compatibilidad)
+    Route::get('/panel', fn() => redirect()->route('empleado.panel'));
+});
+
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+
+    // /cliente  (entrada principal)
+    Route::get('/', function () {
+        $user = Auth::user();
+        if ($user->role !== 'cliente') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+        return view('cliente.inicio');
+    })->name('inicio');
+
+    // /cliente/inicio (compatibilidad)
+    Route::get('/inicio', fn() => redirect()->route('cliente.inicio'));
+});
+
+use App\Http\Controllers\CotizacionController;
+
+Route::middleware(['auth'])->group(function () {
+    // CLIENTE: enviar cotización
+    Route::post('/cotizaciones', [CotizacionController::class, 'store'])
+        ->name('cotizaciones.store');
+
+    // (opcional) ver mis cotizaciones
+    Route::get('/mis-cotizaciones', [CotizacionController::class, 'misCotizaciones'])
+        ->name('cotizaciones.mias');
+});
+Route::get('/cotizaciones/{cotizacion}', [CotizacionController::class, 'show'])
+    ->name('cotizaciones.show');
+
+
+// ADMIN (solo lectura/respuesta)
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/cotizaciones', [CotizacionController::class, 'index'])->name('cotizaciones.index');
+    Route::get('/cotizaciones/{cotizacion}', [CotizacionController::class, 'show'])->name('cotizaciones.show');
+    Route::post('/cotizaciones/{cotizacion}/responder', [CotizacionController::class, 'responder'])->name('cotizaciones.responder');
+});
+
+use App\Http\Controllers\CotizacionClienteController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mis-cotizaciones', [CotizacionClienteController::class, 'index'])
+        ->name('cliente.cotizaciones.index');
+
+    Route::get('/mis-cotizaciones/{cotizacion}', [CotizacionClienteController::class, 'show'])
+        ->name('cliente.cotizaciones.show');
+
+    Route::post('/mis-cotizaciones/{cotizacion}/confirmar', [CotizacionClienteController::class, 'confirmarPedido'])
+        ->name('cliente.cotizaciones.confirmar');
+});

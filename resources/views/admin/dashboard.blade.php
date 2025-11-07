@@ -22,6 +22,8 @@
       position:relative; overflow-x:hidden;
     }
 
+    .container{max-width:1100px;margin:18px auto;padding:0 16px}
+
     /* Motas “harina” decorativas */
     .dust, .dust::before, .dust::after{
       position:absolute; inset:0; pointer-events:none;
@@ -97,22 +99,24 @@
       width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
       background:#f7ede4; border:1px solid var(--line);
     }
-    .drawer-nav{
-      padding:12px;
-      display:grid; gap:8px;
-    }
-    .drawer-nav a, .drawer-nav form button{
+    .drawer-nav{ padding:12px; display:grid; gap:8px; }
+    .drawer-nav a, .drawer-nav form button, .drawer-nav label.close-drawer{
       display:flex; align-items:center; gap:10px;
       padding:12px 14px; border-radius:12px; text-decoration:none; border:1px solid var(--line);
       background:#fff; color:var(--text); font-weight:700;
       box-shadow:0 6px 14px rgba(0,0,0,.04);
       transition:transform .12s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+      cursor:pointer;
     }
-    .drawer-nav a:hover, .drawer-nav form button:hover{
+    .drawer-nav a:hover, .drawer-nav form button:hover, .drawer-nav label.close-drawer:hover{
       transform:translateY(-2px); background:#fffdfb; border-color:#e6d8c7;
       box-shadow:0 12px 20px rgba(0,0,0,.06);
     }
     .drawer-nav .emoji{ width:24px; text-align:center }
+    .badge{
+      display:inline-block; min-width:22px; padding:2px 6px; border-radius:10px;
+      background:#d9534f; color:#fff; font-size:.8rem; line-height:1; text-align:center;
+    }
 
     /* Estado abierto */
     #nav-toggle:checked ~ .overlay{opacity:1; visibility:visible}
@@ -120,6 +124,17 @@
     #nav-toggle:checked + label .bars{ transform:rotate(45deg) }
     #nav-toggle:checked + label .bars::before{ transform:rotate(90deg); top:0 }
     #nav-toggle:checked + label .bars::after { opacity:0 }
+
+    /* Tarjetas */
+    .card{ background:var(--glass); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .card h3{ margin:0 0 8px 0 }
+    .card .body{ padding:16px }
+    .list{ list-style:none; margin:0; padding:0 }
+    .list li{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line) }
+    .list li:last-child{ border-bottom:none }
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; text-decoration:none; border:1px solid var(--line); background:#fff; color:var(--text); }
+    .btn-primary{ background:var(--brand); color:#fff; border-color:#6c442a }
+    .btn-primary:hover{ filter:brightness(.98) }
 
     /* Focus accesible */
     a,button{ outline:none }
@@ -142,14 +157,19 @@
         </div>
       </div>
 
-      <!-- Toggle + botón hamburguesa -->
+      {{-- Toggle + botón hamburguesa --}}
       <input type="checkbox" id="nav-toggle" aria-hidden="true">
       <label for="nav-toggle" class="burger" aria-label="Abrir menú" aria-controls="drawer" aria-expanded="false">
         <span class="bars"></span>
       </label>
 
-      <!-- Overlay + Drawer -->
+      {{-- Overlay + Drawer --}}
       <div class="overlay"></div>
+
+      @php
+          $pendientes = \App\Models\Cotizacion::where('estado','pendiente')->count();
+      @endphp
+
       <nav id="drawer" class="drawer" aria-label="Navegación principal">
         <div class="drawer-head">
           <div class="mini">🍞</div>
@@ -158,24 +178,68 @@
             <small>Administrador</small>
           </div>
         </div>
-     <div class="drawer-nav">
-      <!-- Nuevo botón regresar que solo cierra el menú -->
-      <label for="nav-toggle" class="close-drawer">
-        <span class="emoji">⬅️</span> Regresar
-      </label>
+        <div class="drawer-nav">
+          {{-- Nuevo botón regresar que solo cierra el menú --}}
+          <label for="nav-toggle" class="close-drawer">
+            <span class="emoji">⬅️</span> Regresar
+          </label>
 
-      <a href="{{ route('productos.index') }}"><span class="emoji">🥐</span> Gestionar productos</a>
-      <a href="{{ route('empleado.panel') }}"><span class="emoji">👩‍🍳</span> Ver Panel Empleado</a>
-      <a href="{{ route('cliente.inicio') }}"><span class="emoji">🛍️</span> Ver Página Cliente</a>
+          <a href="{{ route('admin.productos.index') }}"><span class="emoji">🥐</span> Gestionar productos</a>
 
-      <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit"><span class="emoji">🚪</span> Cerrar sesión</button>
-      </form>
+          {{-- Enlace a cotizaciones con badge de pendientes --}}
+          <a href="{{ route('admin.cotizaciones.index') }}">
+            <span class="emoji">💬</span> Cotizaciones
+            @if($pendientes > 0)
+              <span class="badge" title="Pendientes">{{ $pendientes }}</span>
+            @endif
+          </a>
+
+          <a href="{{ route('empleado.panel') }}"><span class="emoji">👩‍🍳</span> Ver Panel Empleado</a>
+          <a href="{{ route('cliente.inicio') }}"><span class="emoji">🛍️</span> Ver Página Cliente</a>
+
+          <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit"><span class="emoji">🚪</span> Cerrar sesión</button>
+          </form>
+        </div>
+      </nav>
     </div>
-
   </header>
 
-  <!-- Página sin contenido adicional, solo el header con el menú -->
+  <main class="container">
+    {{-- Widget: Nuevas cotizaciones --}}
+    @php
+        $nuevas = \App\Models\Cotizacion::with(['cliente','producto'])
+            ->where('estado','pendiente')
+            ->latest()->take(6)->get();
+    @endphp
+
+    <section class="card" aria-labelledby="cotis-title" style="margin-top:16px;">
+      <div class="body">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <h3 id="cotis-title">Nuevas cotizaciones</h3>
+          <a class="btn" href="{{ route('admin.cotizaciones.index') }}">Ver todas</a>
+        </div>
+
+        @if($nuevas->isEmpty())
+          <p style="margin:12px 0 0;color:var(--muted)">No hay cotizaciones pendientes.</p>
+        @else
+          <ul class="list" style="margin-top:8px">
+            @foreach($nuevas as $c)
+              <li>
+                <div>
+                  <div><strong>{{ $c->producto->nombre ?? '—' }}</strong></div>
+                  <small style="color:var(--muted)">
+                    {{ $c->cliente->name ?? 'Cliente' }} • {{ $c->created_at->diffForHumans() }}
+                  </small>
+                </div>
+                <a class="btn btn-primary" href="{{ route('admin.cotizaciones.show', $c) }}">Revisar</a>
+              </li>
+            @endforeach
+          </ul>
+        @endif
+      </div>
+    </section>
+  </main>
 </body>
 </html>

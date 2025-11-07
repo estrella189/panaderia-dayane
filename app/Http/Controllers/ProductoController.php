@@ -4,89 +4,123 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\productos;
-use App\Models\categorias;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\Producto;
+use App\Models\Categoria;
+use App\Models\Subcategoria;
 
 class ProductoController extends Controller
 {
     // ==== CATÁLOGO PÚBLICO (requiere login, pero NO rol admin) ====
     public function publicoPorCategoria(string $categoria)
     {
-         $slug = Str::slug(trim($categoria), '-'); // "Frutas/" -> "frutas", "pasteles-de-frutas" -> "pasteles-de-frutas"
+        $slug = Str::slug(trim($categoria), '-');
 
-    $map = [
-        'chocolate'          => 'pasteles.chocolate',
-        'eventos'            => 'pasteles.eventos',
-        'temporada'          => 'pasteles.temporada',
-        'rollos'             => 'pasteles.rollos',
-        'frutas'             => 'pasteles.frutas',
-        'pasteles-de-frutas' => 'pasteles.frutas', // alias
-    ];
+        $map = [
+            'chocolate'          => 'pasteles.chocolate',
+            'eventos'            => 'pasteles.eventos',
+            'temporada'          => 'pasteles.temporada',
+            'rollos'             => 'pasteles.rollos',
+            'frutas'             => 'pasteles.frutas',
+            'pasteles-de-frutas' => 'pasteles.frutas', // alias
+        ];
 
-    abort_unless(isset($map[$slug]), 404);
-    return view($map[$slug]);
+        abort_unless(isset($map[$slug]), 404);
+
+        return view($map[$slug]);
     }
-    
-    /* ======== CRUD (ADMIN) ======== */
+
+    // ==== PANEL ADMINISTRATIVO ====
+
+    // Mostrar lista de productos
     public function index()
     {
-        $productos = productos::with('categoria')->get();
-        return view('productos.index', compact('productos'));
+        $productos = Producto::with(['categoria', 'subcategoria'])->get();
+        return view('admin.productos.index', compact('productos'));
     }
 
+    // Mostrar formulario para crear producto
     public function create()
     {
-        $categorias = categorias::all();
-        return view('productos.create', compact('categorias'));
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
+        return view('admin.productos.create', compact('categorias', 'subcategorias'));
     }
 
+    // Guardar nuevo producto
     public function store(Request $request)
     {
         $request->validate([
-            'Nombre'      => 'required|string|max:255',
-            'Descripcion' => 'nullable|string',
-            'Precio'      => 'required|numeric',
-            'Stock'       => 'required|integer',
-            'IdCategoria' => 'required|exists:categorias,IdCategoria',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'id_categoria' => 'required|exists:categorias,id',
+            'id_subcategoria' => 'required|exists:subcategorias,id',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        productos::create($request->all());
+        $imagen = null;
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen')->store('productos', 'public');
+        }
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto agregado correctamente.');
+        Producto::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'id_categoria' => $request->id_categoria,
+            'id_subcategoria' => $request->id_subcategoria,
+            'imagen' => $imagen,
+        ]);
+
+        return redirect()->route('productos.index')->with('success', 'Producto agregado correctamente.');
     }
 
-    public function edit($id)
+    // Mostrar formulario para editar producto
+    public function edit(Producto $producto)
     {
-        $producto   = productos::findOrFail($id);
-        $categorias = categorias::all();
-        return view('productos.edit', compact('producto', 'categorias'));
+        $categorias = Categoria::all();
+        $subcategorias = Subcategoria::all();
+        return view('admin.productos.edit', compact('producto', 'categorias', 'subcategorias'));
     }
 
-    public function update(Request $request, $id)
+    // Actualizar producto
+    public function update(Request $request, Producto $producto)
     {
         $request->validate([
-            'Nombre'      => 'required|string|max:255',
-            'Descripcion' => 'nullable|string',
-            'Precio'      => 'required|numeric',
-            'Stock'       => 'required|integer',
-            'IdCategoria' => 'required|exists:categorias,IdCategoria',
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'id_categoria' => 'required|exists:categorias,id',
+            'id_subcategoria' => 'required|exists:subcategorias,id',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $producto = productos::findOrFail($id);
-        $producto->update($request->all());
+        if ($request->hasFile('imagen')) {
+            if ($producto->imagen) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+            $producto->imagen = $request->file('imagen')->store('productos', 'public');
+        }
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto actualizado correctamente.');
+        $producto->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'id_categoria' => $request->id_categoria,
+            'id_subcategoria' => $request->id_subcategoria,
+            'imagen' => $producto->imagen,
+        ]);
+
+        return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroy($id)
+    // Eliminar producto
+    public function destroy(Producto $producto)
     {
-        $producto = productos::findOrFail($id);
+        if ($producto->imagen) {
+            Storage::disk('public')->delete($producto->imagen);
+        }
+
         $producto->delete();
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto eliminado correctamente.');
+        return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente.');
     }
 }

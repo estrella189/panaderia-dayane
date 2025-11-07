@@ -2,33 +2,31 @@
 
 namespace Database\Seeders;
 
-use App\Models\Categoria;
-use App\Models\categorias;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use App\Models\Categoria;
+use App\Models\Subcategoria;
 
 class CategoriaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Grupos (padres)
+        // Categorías principales y sus subcategorías
         $grupos = [
-            'Repostería'     => ['Pan Dulce', 'Pan Salado', 'Pay de queso'],
-            'Pasteles'       => ['Rollos y Variedades', 'Productos temporada', 'Pasteles de chocolate', 'Para Eventos', 'Pasteles de fruta'],
-            'Otros Productos'=> ['Leche', 'Coca-Cola y Refrescos', 'Hidratantes'],
+            'Repostería' => ['Pan Dulce', 'Pan Salado', 'Pay de Queso'],
+            'Pasteles' => ['Rollos y Variedades', 'Productos de Temporada', 'Pasteles de Chocolate', 'Para Eventos', 'Pasteles de Fruta'],
+            'Otros Productos' => ['Leche', 'Refrescos', 'Hidratantes'],
         ];
 
-        foreach ($grupos as $padreNombre => $hijos) {
-            $padre = categorias::firstOrCreate(
-                ['slug' => Str::slug($padreNombre)],
-                ['nombre' => $padreNombre, 'parent_id' => null]
-            );
+        foreach ($grupos as $nombreCategoria => $subcategorias) {
+            // Crear la categoría principal
+            $categoria = Categoria::firstOrCreate(['nombre' => $nombreCategoria]);
 
-            foreach ($hijos as $hijoNombre) {
-                categorias::firstOrCreate(
-                    ['slug' => Str::slug($hijoNombre)],
-                    ['nombre' => $hijoNombre, 'parent_id' => $padre->id]
-                );
+            // Crear sus subcategorías
+            foreach ($subcategorias as $nombreSubcategoria) {
+                Subcategoria::firstOrCreate([
+                    'nombre' => $nombreSubcategoria,
+                    'id_categoria' => $categoria->id,
+                ]);
             }
         }
     }

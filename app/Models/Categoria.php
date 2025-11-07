@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Categoria extends Model
+{
+    use HasFactory;
+
+    protected $fillable = ['nombre'];
+
+    // Una categoría tiene muchas subcategorías
+    public function subcategorias()
+    {
+        return $this->hasMany(Subcategoria::class, 'id_categoria');
+    }
+
+    // Una categoría puede tener muchos productos
+    public function productos()
+    {
+        return $this->hasMany(Producto::class, 'id_categoria');
+    }
+}

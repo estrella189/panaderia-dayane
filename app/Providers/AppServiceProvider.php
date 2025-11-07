@@ -2,33 +2,20 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\User;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
-
-class AppServiceProvider extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
+    protected $policies = [
+        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+    ];
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-   // Permiso para panel de empleado (admin y empleado)
-    Gate::define('view-empleado-panel', function ($user) {
-        return in_array($user->role, ['admin', 'empleado']);
-    });
-
-    // Permiso para panel de cliente (admin y cliente)
-    Gate::define('view-cliente-panel', function ($user) {
-        return in_array($user->role, ['admin', 'cliente']);
-    });
-}
+        Gate::define('admin', fn (User $user) => $user->role === 'admin');
+        Gate::define('empleado', fn (User $user) => $user->role === 'empleado');
+        Gate::define('cliente', fn (User $user) => $user->role === 'cliente');
+    }
 }
