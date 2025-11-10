@@ -21,6 +21,7 @@
     .alert-danger{background:#fde8e8;border:1px solid #f4b2b2;color:#8b1a1a}
     .pagination{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
     .pagination a,.pagination span{padding:6px 10px;border:1px solid #e0c9b6;border-radius:8px;text-decoration:none;color:#5c3a21;background:#fff}
+    
   </style>
 </head>
 <body>
@@ -77,11 +78,8 @@
           </tbody>
         </table>
 
-        @if(method_exists($cotizaciones,'links'))
-          <div class="pagination">
-            {!! $cotizaciones->links('vendor.pagination.simple-default') !!}
-          </div>
-        @endif
+        <div class="pagination">
+          {{ $cotizaciones->links() }}
       </div>
     </div>
   </div>

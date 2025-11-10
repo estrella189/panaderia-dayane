@@ -21,8 +21,6 @@
       background: radial-gradient(1100px 700px at 12% -10%, #ffeedd 0%, #fff 35%),
                   linear-gradient(180deg, var(--bg1), var(--bg2));
     }
-
-    /* ===== Encabezado ===== */
     header{
       background:linear-gradient(180deg, #8b5e3c, #7b5234);
       color:#fff; display:flex; align-items:center;
@@ -37,7 +35,6 @@
     header h1{ margin:0; font-size:1.4rem; letter-spacing:.3px; font-weight:800 }
     header .sub{opacity:.9; margin-top:2px; font-size:.9rem; letter-spacing:.2px}
 
-    /* Botón regresar (solo si admin) */
     .back-btn{
       background:#ffffff18; color:#fff; text-decoration:none;
       border:1px solid #ffffff30; border-radius:10px;
@@ -47,7 +44,6 @@
     }
     .back-btn:hover{background:#ffffff28; transform:translateY(-1px)}
 
-    /* ===== Contenido principal ===== */
     main{ width:min(980px, 92%); margin:42px auto; display:grid; gap:18px; }
     .card{
       background:var(--glass);
@@ -66,10 +62,8 @@
     .card-head h2{ margin:.1em 0 .35em; font-size:1.35rem }
     .card-head p{ margin:0; font-size:1.05rem }
     .hi{ font-weight:800 }
-
     .body{ padding:22px; }
 
-    /* Quick actions */
     .quick{
       display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap:12px;
@@ -85,19 +79,14 @@
     .btn-brand{ background:linear-gradient(180deg, var(--brand), #6f4b30); }
     .btn-brand2{ background:linear-gradient(180deg, var(--brand-2), #8e6949); }
     .btn-accent{ background:linear-gradient(180deg, var(--accent), #c86635); }
-    .btn-light{
-      background:#fff; color:var(--brand); border-color:#eadfce;
-    }
-    .btn:hover{ filter:brightness(.98); transform:translateY(-1px) }
+    .btn-light{ background:#fff; color:var(--brand); border-color:#eadfce; }
 
-    /* Bloque “último pedido” */
     .order{
       background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px 16px;
       display:grid; gap:6px;
     }
     .order small{ color:var(--muted) }
 
-    /* Cerrar sesión */
     .actions{ text-align:center; padding:0 22px 26px }
     form{ display:inline }
     .logout{
@@ -108,16 +97,26 @@
       box-shadow:0 10px 22px rgba(215,122,73,.28);
       transition:transform .12s ease, filter .18s ease;
     }
-    .logout:hover{ filter:brightness(.97) }
-    .logout:active{ transform:translateY(1px) }
 
-    /* Pie */
     footer{ text-align:center; color:var(--muted); padding:18px 12px; margin-bottom:8px; }
 
-    /* Responsive */
     @media (max-width:520px){
       header h1{font-size:1.3rem}
     }
+
+    .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+    .chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between}
+    .chip strong{font-size:1.1rem}
+    .badge{display:inline-block;min-width:22px;padding:2px 8px;border-radius:10px;background:#d9534f;color:#fff;font-size:.85rem;text-align:center}
+    .badge-ok{background:#2b8a3e}.badge-warn{background:#e3b04b}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #f0e2d5;text-align:left}
+    th{background:#fff7f1}
+    .small{color:var(--muted);font-size:.92rem}
+    .alert{padding:10px 14px;border-radius:8px;margin:10px 0}
+    .alert-success{background:#e7f7ea;border:1px solid #b3e3b3;color:#2b6b2b}
+    .alert-danger{background:#fde8e8;border:1px solid #f4b2b2;color:#8b1a1a}
+    form.inline{display:inline}
   </style>
 </head>
 <body>
@@ -130,49 +129,148 @@
       </div>
     </div>
 
-    @if(auth()->user()->role === 'admin')
+    @if(auth()->check() && auth()->user()->role === 'admin')
       <a href="{{ url()->previous() }}" class="back-btn">⬅️ Regresar</a>
     @endif
   </header>
 
   <main role="main">
-    {{-- Tarjeta de bienvenida --}}
     <section class="card" aria-labelledby="bienvenida">
       <div class="card-head">
         <h2 id="bienvenida">¡Hola!</h2>
-        <p>Bienvenido, <span class="hi">{{ auth()->user()->name }}</span>.</p>
+   <p>Bienvenido, <span class="hi">{{ auth()->user()->name ?? 'Cliente' }}</span>.</p>
+
       </div>
 
       <div class="body" style="display:grid; gap:18px">
-        {{-- Acciones rápidas para pedir --}}
+        {{-- Acciones rápidas --}}
         <div class="quick">
-          {{-- Si definiste una ruta general de catálogo, úsala. Si no, deja las categorías directas. --}}
-          {{-- <a href="{{ route('catalogo') }}" class="btn btn-brand">🛒 Ver catálogo y pedir</a> --}}
-
           <a href="{{ route('productos.publico', 'chocolate') }}" class="btn btn-brand">🍫 Pasteles de chocolate</a>
           <a href="{{ route('productos.publico', 'eventos') }}" class="btn btn-brand2">🎉 Pasteles para eventos</a>
           <a href="{{ route('productos.publico', 'temporada') }}" class="btn btn-accent">🍁 Pasteles de temporada</a>
           <a href="{{ route('productos.publico', 'rollos') }}" class="btn btn-accent">🍥 Rollos y variedades</a>
           <a href="{{ route('productos.publico', 'frutas') }}" class="btn btn-brand2">🍓 Pasteles de frutas</a>
+          <a href="{{ route('cliente.cotizaciones.index') }}" class="btn btn-brand">💬 Mis cotizaciones</a>
           <a href="{{ route('pedidos.index') }}" class="btn btn-light">📦 Mis pedidos</a>
         </div>
 
         {{-- Último pedido (opcional) --}}
-        @isset($ultimoPedido)
+        @if(!empty($ultimoPedido))
           <div class="order">
             <strong>Tu último pedido</strong>
-            <small>#{{ $ultimoPedido->id }} • Estado: {{ ucfirst($ultimoPedido->estado) }} •
-              Entrega: {{ $ultimoPedido->fecha_entrega ?? '—' }}</small>
+            <small>
+              #{{ $ultimoPedido->id }}
+              • Estado: {{ ucfirst($ultimoPedido->estado ?? '—') }}
+              • Entrega: {{ $ultimoPedido->fecha_entrega ?? '—' }}
+            </small>
             <div>
-              <a href="{{ route('pedidos.show', $ultimoPedido) }}" class="btn btn-light" style="margin-top:6px;">Ver detalle</a>
+              <a href="{{ route('pedidos.show', $ultimoPedido->id) }}" class="btn btn-light" style="margin-top:6px;">Ver detalle</a>
             </div>
           </div>
-        @endisset
+        @endif
 
-        {{-- Mensaje amable --}}
         <div style="text-align:center; color:var(--muted);">
           ¿No encuentras un diseño? Haz tu pedido y escribe el mensaje que quieres en tu pastel. 💌
         </div>
+
+        {{-- Flash messages --}}
+        @if(session('ok'))    <div class="alert alert-success">{{ session('ok') }}</div> @endif
+        @if(session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
+        @php
+    use Illuminate\Support\Facades\Auth;
+    use App\Models\Cotizacion;
+
+    $clienteId  = Auth::id();
+
+    // Si no vienen desde el controlador, calcúlalas aquí:
+    $pendientes = $pendientes ?? Cotizacion::where('id_cliente',$clienteId)
+                                           ->where('estado','pendiente')
+                                           ->count();
+
+    $cotizadas  = $cotizadas  ?? Cotizacion::where('id_cliente',$clienteId)
+                                           ->where('estado','cotizado')
+                                           ->count();
+
+    $ultimas    = $ultimas    ?? Cotizacion::with(['producto','pedido'])
+                                           ->where('id_cliente',$clienteId)
+                                           ->latest()->take(5)->get();
+@endphp
+
+        {{-- Resumen --}}
+        <div class="chips">
+          <div class="chip"><strong>Pendientes</strong><span class="badge badge-warn">{{ $pendientes }}</span></div>
+          <div class="chip"><strong>Cotizadas</strong><span class="badge badge-ok">{{ $cotizadas }}</span></div>
+        </div>
+
+        {{-- Últimas cotizaciones --}}
+        <div class="card" style="background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:6px">
+          <div class="card-head" style="text-align:left">
+            <h2 style="margin:0">Tus últimas cotizaciones</h2>
+            <p class="small" style="margin-top:6px">Revisa el estado y confirma tu pedido si ya fue cotizada.</p>
+          </div>
+          <div class="body" style="padding-top:0">
+            @if($ultimas->isEmpty())
+              <p class="small" style="padding-top:16px">Aún no tienes cotizaciones.</p>
+            @else
+              <div style="overflow:auto">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="min-width:140px">Fecha</th>
+                      <th>Producto</th>
+                      <th>Estado</th>
+                      <th>Precio</th>
+                      <th class="small"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach($ultimas as $c)
+                      @php
+                        $isPend = ($c->estado === 'pendiente');
+                      @endphp
+                      <tr>
+                        <td>{{ optional($c->created_at)->format('d/m/Y H:i') ?? '—' }}</td>
+                        <td>{{ $c->producto->nombre ?? '—' }}</td>
+                        <td>
+                  @php($isPend = $c->estado === 'pendiente')
+                  <span class="badge {{ $isPend ? 'badge-warn' : 'badge-ok' }}">
+                    {{ ucfirst($c->estado ?? '—') }}
+                  </span>
+
+                        </td>
+                        <td>
+                          @if(($c->estado === 'cotizado') && !is_null($c->precio))
+                            ${{ number_format($c->precio,2) }}
+                          @else
+                            —
+                          @endif
+                        </td>
+                        <td style="white-space:nowrap">
+                          <a href="{{ route('cliente.cotizaciones.show', $c->id) }}" class="btn btn-light" style="padding:8px 12px;">Ver</a>
+
+                          @if(($c->estado === 'cotizado') && !is_null($c->precio) && empty($c->pedido))
+                            <form method="POST" action="{{ route('cliente.cotizaciones.confirmar', $c->id) }}" class="inline">
+                              @csrf
+                              <button class="btn btn-brand2" style="padding:8px 12px;border-color:#eadfce" type="submit">
+                                Hacer pedido
+                              </button>
+                            </form>
+                          @elseif(!empty($c->pedido))
+                            <span class="small">Pedido #{{ $c->pedido->id }} ({{ $c->pedido->estado }})</span>
+                          @endif
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              <div style="margin-top:10px">
+                <a href="{{ route('cliente.cotizaciones.index') }}" class="btn btn-light">Ver todas</a>
+              </div>
+            @endif
+          </div>
+        </div>
+        {{-- /Últimas cotizaciones --}}
       </div>
 
       <div class="actions">
@@ -189,5 +287,3 @@
   </footer>
 </body>
 </html>
-
-

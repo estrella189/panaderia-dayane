@@ -80,13 +80,6 @@ Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
 
-Route::middleware(['auth', 'can:view-empleado-panel'])->group(function () {
-    Route::get('/empleado', [EmpleadoController::class, 'panel'])->name('empleado.panel');
-});
-
-Route::middleware(['auth', 'can:view-cliente-panel'])->group(function () {
-    Route::get('/cliente', [ClienteController::class, 'panel'])->name('cliente.inicio');
-});
 
 Route::get('/Rollos y Variedades', fn() => view('Rollos y Variedades'))->name('Rollos y Variedades');
 Route::get('/Rollos y Variedades.html', fn() => redirect('/Rollos y Variedades'));
@@ -164,35 +157,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 });
 
 
-Route::middleware(['auth'])->prefix('empleado')->name('empleado.')->group(function () {
 
-    // /empleado  (entrada principal)
-    Route::get('/', function () {
-        $user = Auth::user();
-        if ($user->role !== 'empleado') {
-            abort(403, 'No tienes permiso para acceder a esta página.');
-        }
-        return view('empleado.panel');
-    })->name('panel');
-
-    // /empleado/panel (compatibilidad)
-    Route::get('/panel', fn() => redirect()->route('empleado.panel'));
-});
-
-Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
-
-    // /cliente  (entrada principal)
-    Route::get('/', function () {
-        $user = Auth::user();
-        if ($user->role !== 'cliente') {
-            abort(403, 'No tienes permiso para acceder a esta página.');
-        }
-        return view('cliente.inicio');
-    })->name('inicio');
-
-    // /cliente/inicio (compatibilidad)
-    Route::get('/inicio', fn() => redirect()->route('cliente.inicio'));
-});
 
 use App\Http\Controllers\CotizacionController;
 
@@ -227,4 +192,23 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/mis-cotizaciones/{cotizacion}/confirmar', [CotizacionClienteController::class, 'confirmarPedido'])
         ->name('cliente.cotizaciones.confirmar');
+});
+
+
+Route::middleware(['auth'])->prefix('empleado')->name('empleado.')->group(function () {
+    Route::get('/', [EmpleadoController::class, 'panel'])->name('home'); // 👈 NUEVA
+    Route::get('/panel', [EmpleadoController::class, 'panel'])->name('panel');
+
+    Route::get('/pedidos', [EmpleadoController::class, 'pedidosIndex'])->name('pedidos.index');
+    Route::get('/pedidos/{pedido}', [EmpleadoController::class, 'pedidosShow'])->name('pedidos.show');
+    Route::patch('/pedidos/{pedido}/estado', [EmpleadoController::class, 'pedidosUpdateEstado'])->name('pedidos.estado');
+});
+
+
+Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function () {
+    // /cliente  -> controlador que SÍ envía $pendientes, $cotizadas, $ultimas
+    Route::get('/', [CotizacionClienteController::class,'panel'])->name('panel');
+
+    // /cliente/panel -> compatibilidad, redirige a /cliente
+    Route::get('/panel', fn () => redirect()->route('cliente.panel'));
 });

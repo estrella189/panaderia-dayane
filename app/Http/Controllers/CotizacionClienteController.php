@@ -9,7 +9,25 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CotizacionClienteController extends Controller
+
 {
+ public function panel()
+{
+    $clienteId  = Auth::id();
+
+    $pendientes = Cotizacion::where('id_cliente',$clienteId)
+                    ->where('estado','pendiente')->count();
+
+    $cotizadas  = Cotizacion::where('id_cliente',$clienteId)
+                    ->where('estado','cotizado')->count();
+
+    $ultimas    = Cotizacion::with(['producto','pedido'])
+                    ->where('id_cliente',$clienteId)
+                    ->latest()->take(5)->get();
+
+    // usa la vista que corresponda: cliente.inicio o cliente.panel
+    return view('cliente.inicio', compact('pendientes','cotizadas','ultimas'));
+}
     public function index(Request $request)
     {
         $cotizaciones = Cotizacion::with(['producto','pedido'])
