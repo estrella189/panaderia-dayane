@@ -11,6 +11,7 @@
       font-family:'Trebuchet MS','Lucida Sans Unicode','Lucida Grande','Lucida Sans',Arial,sans-serif;
       background-color:#f5f5f5; color:#333;
     }
+
     /* Header */
     header{
       background:#8b5e3c; color:#fff; padding:20px;
@@ -29,24 +30,20 @@
     }
     nav a:hover, nav a.active{ background:#8b5e3c; }
 
-    /* === Dropdown Productos === */
-    .productos-wrapper{
-      display:inline-block; position:relative;
+    /* ===== Dropdown Productos (sin JS) ===== */
+    .productos-root{
+      display:inline-block; position:relative; /* para posicionar el panel */
     }
+    .productos-root > summary{
+      list-style:none;
+      color:#fff; padding:12px 20px; font-size:18px;
+      cursor:pointer; display:inline-block; user-select:none;
+      border-radius:0; /* apariencia igual a los <a> */
+    }
+    .productos-root > summary::-webkit-details-marker{ display:none; }
+    .productos-root > summary:hover{ background:#8b5e3c; }
 
-    /* “Productos” como texto, no link */
-    .productos-btn{
-      color:#fff;
-      padding:12px 20px;
-      font-size:18px;
-      cursor:pointer;
-      display:inline-block;
-    }
-    .productos-btn:hover{
-      background:#8b5e3c;
-    }
-
-    /* Panel del menú desplegable */
+    /* Panel del menú */
     .menu{
       display:none;
       position:absolute; top:100%; left:50%; transform:translateX(-50%);
@@ -54,52 +51,45 @@
       box-shadow:0 8px 24px rgba(0,0,0,.16); z-index:2;
       flex-direction:column;
     }
-    /* Mostrar al pasar el mouse */
-    .productos-wrapper:hover .menu{
-      display:flex;
-    }
+
+    /* Abrir por hover (desktop) o por click/tap (mobile con details[open]) */
+    .productos-root:hover .menu{ display:flex; }
+    .productos-root[open] .menu{ display:flex; }
 
     /* Items del panel */
     .menu a{ color:#0f0e0e; text-decoration:none; padding:8px 12px; font-size:14px; display:block; border-radius:10px; }
     .menu a:hover{ background:#8b5e3c; color:#fff; }
 
-    /* Subgrupos usando <details> */
+    /* Subgrupos usando <details> internos */
     .menu details{ padding:4px 10px; }
     .menu summary{
       list-style:none; cursor:pointer; padding:8px 10px; font-size:14px; color:#0f0e0e;
       display:flex; justify-content:center; align-items:center; text-align:center;
-      border-radius:10px;
+      border-radius:10px; user-select:none;
     }
+    .menu summary::-webkit-details-marker{ display:none; }
     .menu summary:hover{ background:#8b5e3c; color:#fff; }
     .menu summary::after{ content:"▸"; font-size:18px; margin-left:10px; }
-    .menu details[open] summary::after{ content:"▾"; }
+    .menu details[open] > summary::after{ content:"▾"; }
     .submenu{
       display:flex; flex-direction:column; margin-left:10px; border-left:2px solid #a97e5a; padding-left:8px;
     }
     .submenu a{ padding:6px 8px; font-size:13px; }
     .submenu a:hover{ background:#8b5e3c; color:#fff; }
 
-    /* ====== MODO MÓVIL ====== */
-    .menu-toggle{ display:none; }
-    .menu-toggle-label{
-      display:none;
-      font-size:22px; cursor:pointer; color:#fff; padding:12px 14px; margin-left:6px;
-    }
+    /* ====== Responsivo ====== */
     @media (max-width:768px){
       header h1{ font-size:20px; }
       nav{ padding:6px 0; }
       nav a{ font-size:14px; padding:10px; }
 
-      .productos-btn{ display:none; } /* ocultamos el texto “Productos” en móvil */
-      .menu-toggle-label{ display:inline-block; }
+      /* Mantenemos el mismo comportamiento visual en móvil (sin hamburguesa) */
+      .productos-root > summary{ font-size:14px; padding:10px 14px; }
       .menu{
         width:min(92vw,360px);
-        right:auto; left:50%; transform:translateX(-50%);
+        left:50%; transform:translateX(-50%);
         top:calc(100% + 6px);
-        display:none;
       }
-      .menu-toggle:checked ~ .menu{ display:flex; }
-      .productos-wrapper:hover .menu{ display:none; } /* sin hover en móvil */
     }
 
     .colash-image{
@@ -111,11 +101,7 @@
       background:#333; color:#fff; padding:20px; text-align:center; margin-top:100px;
     }
     footer p{ margin:0; font-size:14px; }
-
-    @media (max-width:768px){
-      .colash-image{ max-width:100%; margin:15px auto; }
-      footer p, footer a{ font-size:12px; }
-    }
+    footer a{ color:#fff; text-decoration:underline; }
   </style>
 </head>
 <body>
@@ -132,16 +118,11 @@
     <a href="Nosotros.html">Nosotros</a>
     <a href="Mision y Vision.html">Misión y Visión</a>
 
-    <!-- 🔻 Contenedor “Productos” no clickeable -->
-    <span class="productos-wrapper">
-      <span class="productos-btn">Productos</span>
+    <!-- Productos como <details> raíz (abre por hover y por tap) -->
+    <details class="productos-root">
+      <summary aria-haspopup="true" aria-expanded="false">Productos</summary>
 
-      <!-- móvil -->
-      <input type="checkbox" id="menu-toggle" class="menu-toggle">
-      <label for="menu-toggle" class="menu-toggle-label" aria-label="Abrir menú">☰</label>
-
-      <!-- Menú desplegable -->
-      <div class="menu">
+      <div class="menu" role="menu" aria-label="Productos">
         <details>
           <summary>Repostería</summary>
           <div class="submenu">
@@ -171,7 +152,7 @@
           </div>
         </details>
       </div>
-    </span>
+    </details>
   </nav>
 
   <img src="prodcts.webp" alt="colash" class="colash-image">
@@ -182,4 +163,3 @@
   </footer>
 </body>
 </html>
-

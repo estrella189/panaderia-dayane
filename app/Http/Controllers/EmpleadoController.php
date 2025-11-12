@@ -4,64 +4,80 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Pedido; // 🔹 Importa tu modelo de pedidos
+use App\Models\Pedido;
 
 class EmpleadoController extends Controller
 {
-  public function panel(Request $request)
+    /**
+     * PANEL PRINCIPAL DEL EMPLEADO
+     */
+    public function panel(Request $request)
     {
-        // (opcional) sólo empleado o admin
         $u = Auth::user();
-        if (!$u || !in_array($u->role, ['empleado','admin'])) {
+
+        // Solo empleado o admin pueden entrar
+        if (!$u || !in_array($u->role, ['empleado', 'admin'])) {
             abort(403, 'No tienes permiso.');
         }
 
-        $estado  = $request->query('estado');
-        $pedidos = Pedido::when($estado, fn($q)=> $q->where('estado',$estado))
+        $estado = $request->query('estado');
+
+        // Cliente (users) + Cotización con su Producto
+        $pedidos = Pedido::with(['cliente', 'cotizacion.producto'])
+            ->when($estado, fn($q) => $q->where('estado', $estado))
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('empleado.panel', compact('pedidos','estado'));
+        return view('empleado.panel', compact('pedidos', 'estado'));
     }
 
-    // === MOSTRAR LISTA DE PEDIDOS ===
+    /**
+     * LISTA COMPLETA DE PEDIDOS
+     */
     public function pedidosIndex(Request $request)
     {
-        // Solo empleados o admin pueden acceder
         $user = Auth::user();
+
         if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
             abort(403, 'No tienes permiso para acceder.');
         }
 
-        // Filtro opcional por estado
         $estado = $request->get('estado');
 
-        $pedidos = Pedido::when($estado, function ($q) use ($estado) {
-                $q->where('estado', $estado);
-            })
-            ->orderByDesc('created_at')
+        $pedidos = Pedido::with(['cliente', 'cotizacion.producto'])
+            ->when($estado, fn($q) => $q->where('estado', $estado))
+            ->latest()
             ->paginate(10)
             ->withQueryString();
 
         return view('empleado.pedidos.index', compact('pedidos', 'estado'));
     }
 
-    // === VER DETALLE DE UN PEDIDO ===
+    /**
+     * VER DETALLE DE UN PEDIDO
+     */
     public function pedidosShow(Pedido $pedido)
     {
         $user = Auth::user();
+
         if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
             abort(403, 'No tienes permiso.');
         }
 
+        // Carga relaciones si no están ya cargadas (incluye producto)
+        $pedido->loadMissing(['cliente', 'cotizacion.producto']);
+
         return view('empleado.pedidos.show', compact('pedido'));
     }
 
-    // === ACTUALIZAR ESTADO (Entregado / Cancelado) ===
+    /**
+     * ACTUALIZAR ESTADO (Entregado / Cancelado)
+     */
     public function pedidosUpdateEstado(Request $request, Pedido $pedido)
     {
         $user = Auth::user();
+
         if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
             abort(403, 'No tienes permiso.');
         }
@@ -76,6 +92,7 @@ class EmpleadoController extends Controller
             return back()->with('error', 'Este pedido ya está cerrado.');
         }
 
+        // Actualizar el estado del pedido
         $pedido->estado = $data['estado'];
         $pedido->save();
 

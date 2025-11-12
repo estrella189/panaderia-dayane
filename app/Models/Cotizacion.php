@@ -27,10 +27,11 @@ class Cotizacion extends Model
     {
         return $this->belongsTo(User::class, 'id_cliente');
     }
-
-    public function producto()
+   public function producto()
     {
-        return $this->belongsTo(\App\Models\Producto::class, 'id_producto');
+        // FK: cotizaciones.id_producto -> productos.id
+        return $this->belongsTo(\App\Models\Producto::class, 'id_producto', 'id')
+            ->withDefault(); // evita null si no encuentra (seguirá 'no asignado')
     }
     public function respuesta()
 {

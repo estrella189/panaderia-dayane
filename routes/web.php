@@ -96,6 +96,15 @@ Route::get('/Para Eventos.html', fn() => redirect('/Para Eventos'));
 Route::get('/pasteles de frutas', fn() => view('pasteles de frutas'))->name('pasteles de frutas');
 Route::get('/pasteles de frutas.html', fn() => redirect('/pasteles de frutas'));
 
+Route::get('/leche', fn() => view('leche'))->name('leche');
+Route::get('/leche.html', fn() => redirect('/leche'));
+
+Route::get('/coca', fn() => view('coca'))->name('coca');
+Route::get('/coca.html', fn() => redirect('/coca'));
+
+Route::get('/hidratantes', fn() => view('hidratantes'))->name('hidratantes');
+Route::get('/hidratantes.html', fn() => redirect('/hidratantes'));
+
 
 use App\Http\Controllers\PedidoController;
 
