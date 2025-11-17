@@ -10,19 +10,11 @@ class Producto extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id_categoria',
         'id_subcategoria',
         'nombre',
         'descripcion',
         'imagen',
     ];
-
-    // Relación con Categoría
-    public function categoria()
-    {
-        return $this->belongsTo(Categoria::class, 'id_categoria');
-    }
-
     // Relación con Subcategoría
     public function subcategoria()
     {

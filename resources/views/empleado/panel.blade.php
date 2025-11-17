@@ -14,7 +14,8 @@
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif;
       background:radial-gradient(circle at top left,#fff1e3 0%,#fff9f4 40%,#fff 100%);
       color:var(--text);
     }
@@ -31,6 +32,34 @@
       padding:10px 14px; font-weight:600; text-decoration:none;
       display:inline-flex; align-items:center; gap:6px;
     }
+
+    /* NAV SUPERIOR */
+    .menu-bar{
+      background:#fff3e6;
+      display:flex; gap:12px;
+      padding:10px 20px;
+      border-bottom:1px solid var(--line);
+    }
+    .menu-item{
+      padding:8px 14px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:600;
+      color:var(--brand);
+      background:#ffffff;
+      border:1px solid #e7d4c2;
+      font-size:.9rem;
+    }
+    .menu-item:hover{
+      background:#ffe4cc;
+      border-color:var(--brand);
+    }
+    .menu-item.active{
+      background:var(--brand);
+      color:#fff;
+      border-color:var(--brand);
+    }
+
     main{
       max-width:900px; margin:40px auto; background:var(--card);
       border-radius:var(--radius); padding:30px; box-shadow:var(--shadow);
@@ -41,25 +70,27 @@
     tr:hover td{background:#fff8f3}
     .btn-sm{
       padding:6px 10px;border:none;border-radius:8px;font-weight:600;cursor:pointer;
-      color:#fff;margin:2px;
+      color:#fff;margin:2px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;
     }
-    .success{background:var(--ok)}
-    .danger{background:var(--danger)}
-    .disabled{opacity:.5;cursor:not-allowed}
+    .btn-view{background:var(--brand)}
     .badge{
-      padding:6px 10px;border-radius:10px;color:#fff;font-weight:700;
+      padding:6px 10px;border-radius:10px;color:#fff;font-weight:700;font-size:.85rem;
     }
     .pendiente{background:var(--warn);color:#000}
+    .en_proceso{background:var(--accent)}
     .entregado{background:var(--ok)}
     .cancelado{background:var(--danger)}
 
-    /* Opción C: producto en una línea + tooltip */
     .one-line{
       white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
       max-width:420px; display:block; color:var(--brand); font-weight:600;
     }
     .one-line:hover{ color:var(--accent); cursor:help; }
-    @media (max-width:720px){ .one-line{ max-width:180px; font-size:.9rem; } }
+    @media (max-width:720px){
+      main{margin:20px 10px;padding:20px}
+      .one-line{ max-width:180px; font-size:.9rem; }
+      th:nth-child(1),td:nth-child(1){display:none;} /* oculta # en móvil */
+    }
   </style>
 </head>
 <body>
@@ -72,9 +103,55 @@
     @endauth
   </header>
 
+  {{-- NAV SUPERIOR --}}
+  <nav class="menu-bar">
+    <a href="{{ route('empleado.panel') }}"
+       class="menu-item {{ request()->routeIs('empleado.panel') ? 'active' : '' }}">
+       📋 Panel
+    </a>
+
+    <a href="{{ route('empleado.pedidos.index') }}"
+       class="menu-item {{ request()->routeIs('empleado.pedidos.index') ? 'active' : '' }}">
+       📝 Todos los pedidos
+    </a>
+  </nav>
+
   <main>
     <h2>Hola, {{ auth()->user()->name }}</h2>
-    <p>Gestiona los pedidos y cambia su estado:</p>
+    <p>Gestiona los pedidos de los clientes y revisa su estado.</p>
+
+    @php
+      $filtro = request('estado', 'todos');
+    @endphp
+
+    {{-- FILTROS CHIPS (opcional, los dejo porque ya te gustaron) --}}
+    <div class="filters" style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px;">
+      <a href="{{ route('empleado.panel') }}"
+         class="menu-item {{ $filtro === 'todos' ? 'active' : '' }}"
+         style="padding:6px 12px;font-size:.8rem;">
+        Todos
+      </a>
+      <a href="{{ route('empleado.panel',['estado'=>'pendiente']) }}"
+         class="menu-item {{ $filtro === 'pendiente' ? 'active' : '' }}"
+         style="padding:6px 12px;font-size:.8rem;">
+        Sin responder
+      </a>
+      <a href="{{ route('empleado.panel',['estado'=>'en_proceso']) }}"
+         class="menu-item {{ $filtro === 'en_proceso' ? 'active' : '' }}"
+         style="padding:6px 12px;font-size:.8rem;">
+        En proceso
+      </a>
+      <a href="{{ route('empleado.panel',['estado'=>'entregado']) }}"
+         class="menu-item {{ $filtro === 'entregado' ? 'active' : '' }}"
+         style="padding:6px 12px;font-size:.8rem;">
+        Entregados
+      </a>
+      <a href="{{ route('empleado.panel',['estado'=>'cancelado']) }}"
+         class="menu-item {{ $filtro === 'cancelado' ? 'active' : '' }}"
+         style="padding:6px 12px;font-size:.8rem;">
+        Cancelados
+      </a>
+    </div>
 
     @if(($pedidos ?? collect())->count() > 0)
       <table>
@@ -85,64 +162,36 @@
             <th>Cotización 🧾</th>
             <th>Estado</th>
             <th>Creado</th>
-            <th>Acciones</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @foreach($pedidos as $p)
             @php
-              // Nombre de producto: ajusta el campo si en tu tabla no se llama 'nombre'/'Nombre'
-              $productoNombre = $p->cotizacion && $p->cotizacion->producto
-                ? ($p->cotizacion->producto->nombre ?? $p->cotizacion->producto->Nombre ?? '— Producto no asignado —')
-                : '— Producto no asignado —';
-
-              $tooltip = $p->cotizacion && $p->cotizacion->detalles
-                ? ('Detalles: ' . $p->cotizacion->detalles)
+              $productoNombre = $p->cotizacion?->producto?->nombre
+                ?? $p->cotizacion?->producto?->Nombre
+                ?? '— Producto no asignado —';
+              $tooltip = $p->cotizacion?->detalles
+                ? ('Detalles: '.$p->cotizacion->detalles)
                 : 'Sin detalles';
-
-              $cerrado = in_array($p->estado, ['entregado','cancelado']);
             @endphp
             <tr>
               <td>{{ $p->id }}</td>
               <td>{{ $p->cliente->name ?? '—' }}</td>
-
-              {{-- Opción C aplicada aquí --}}
-              <td>
-                <span class="one-line" title="{{ $tooltip }}">{{ $productoNombre }}</span>
-              </td>
-
-              <td><span class="badge {{ $p->estado }}">{{ ucfirst($p->estado) }}</span></td>
+              <td><span class="one-line" title="{{ $tooltip }}">{{ $productoNombre }}</span></td>
+              <td><span class="badge {{ $p->estado }}">{{ ucfirst(str_replace('_',' ',$p->estado)) }}</span></td>
               <td>{{ optional($p->created_at)->format('d/m/Y H:i') }}</td>
               <td>
-                @if(!$cerrado)
-                  <form method="POST" action="{{ route('empleado.pedidos.estado', $p) }}" style="display:inline">
-                    @csrf
-                    @method('PATCH')
-                    <input type="hidden" name="estado" value="entregado">
-                    <button class="btn-sm success">Entregado</button>
-                  </form>
-                  <form method="POST" action="{{ route('empleado.pedidos.estado', $p) }}" style="display:inline">
-                    @csrf
-                    @method('PATCH')
-                    <input type="hidden" name="estado" value="cancelado">
-                    <button class="btn-sm danger">Cancelar</button>
-                  </form>
-                @else
-                  <button class="btn-sm disabled" disabled>Finalizado</button>
-                @endif
-
-              {{-- 🟤 Botón para ver el detalle --}}
-          <a href="{{ route('empleado.pedidos.show', $p) }}" class="btn-sm" style="background:var(--brand); text-decoration:none;">
-         🔍 Ver detalle
-          </a>
+                <a href="{{ route('empleado.pedidos.show', $p) }}" class="btn-sm btn-view">
+                  🔍 Ver detalle
+                </a>
               </td>
-
             </tr>
           @endforeach
         </tbody>
       </table>
     @else
-      <p style="text-align:center;margin-top:20px;">No hay pedidos registrados.</p>
+      <p style="text-align:center;margin-top:20px;">No hay pedidos registrados para este filtro.</p>
     @endif
 
     @if(is_object($pedidos) && method_exists($pedidos, 'links'))
@@ -153,7 +202,7 @@
 
     <form action="{{ route('logout') }}" method="POST" style="margin-top:25px">
       @csrf
-      <button type="submit" class="btn-sm danger">🚪 Cerrar sesión</button>
+      <button type="submit" class="btn-sm" style="background:var(--danger)">🚪 Cerrar sesión</button>
     </form>
   </main>
 </body>
