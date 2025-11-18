@@ -134,10 +134,10 @@
                 <select class="select" name="sabor"><option value="">—</option><option>Chocolate</option><option>Vainilla</option><option>Fresa</option><option>Nuez</option></select>
               </label>
             </div>
-            <button class="btn" type="submit">Pedir este rollo</button>
+            <button class="btn" type="submit">Pedir cotización</button>
           </form>
           @else
-            <a href="{{ route('login') }}" class="btn" style="display:inline-block;text-decoration:none;text-align:center">Inicia sesión para pedir</a>
+            <a href="{{ route('login') }}" class="btn" style="display:inline-block;text-decoration:none;text-align:center">Inicia sesión para cotizar</a>
           @endauth
         </div>
       </article>

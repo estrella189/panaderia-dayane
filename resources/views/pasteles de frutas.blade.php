@@ -24,7 +24,6 @@
       color:var(--texto);
     }
 
-    /* Header */
     header{
       background:linear-gradient(135deg, #956644, #7b5436);
       color:#fff;
@@ -48,7 +47,6 @@
       height:auto;
     }
 
-    /* Navegación */
     nav{
       background: var(--cafe-medio);
       padding:10px 0;
@@ -75,7 +73,6 @@
       padding:0 16px;
     }
 
-    /* Galería */
     section.products{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -104,64 +101,27 @@
       padding:10px;
       border-bottom:1px solid #eee;
     }
-    /* ====== Tablets ====== */
-@media (max-width: 992px) {
-  header { padding: 22px 14px; }
-  header h1 { gap: 10px; font-size: clamp(20px, 3vw, 30px); }
-  header h1 img { width: 40px; }
 
-  nav { padding: 8px 6px; }
-  nav a { padding: 8px 14px; font-size: 16px; margin: 4px; }
-
-  main { margin: 22px auto 48px; padding: 0 14px; }
-
-  section.products {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 18px;
-  }
-
-  .product-card img { height: 240px; }
-}
-
-/* ====== Celulares grandes ====== */
-@media (max-width: 768px) {
-  header { padding: 18px 12px; }
-  header h1 { font-size: 20px; gap: 8px; flex-direction: row !important; }
-  header h1 img { width: 34px; }
-
-  nav { padding: 8px 6px; overflow-x: auto; white-space: nowrap; }
-  nav a { display: inline-block; padding: 8px 12px; margin: 4px; font-size: 15px; }
-
-  main { margin: 18px auto 40px; padding: 0 12px; }
-
-  section.products {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-  }
-
-  .product-card { border-radius: 18px; }
-  .product-card img { height: 210px; padding: 8px; }
-}
-
-/* ====== Celulares pequeños ====== */
-@media (max-width: 480px) {
-  header h1 { font-size: 18px; gap: 6px; flex-direction: row !important; }
-  header h1 img { width: 28px; }
-
-  nav a { padding: 7px 10px; font-size: 14px; margin: 3px; }
-
-  section.products {
-    grid-template-columns: 1fr;   /* una imagen por fila para lucir mejor */
-    gap: 14px;
-  }
-
-  .product-card img { height: 180px; }
-}
+    .btn{
+      display:inline-block;
+      text-decoration:none;
+      color:#fff;
+      background:#8b5e3c;
+      padding:12px 20px;
+      border-radius:999px;
+      font-weight:600;
+      transition:.2s;
+      margin:12px 6px;
+      font-size:18px;
+    }
+    .btn:hover{
+      background:#a97e5a;
+    }
 
   </style>
 </head>
 <body>
-  <!-- Header -->
+
   <header>
     <h1>
       <img src="pastel.png" alt="Pastel">
@@ -170,13 +130,11 @@
     </h1>
   </header>
 
-  <!-- Nav -->
   <nav>
     <a href="index.html">Inicio</a>
     <a href="producto.html">Productos</a>
   </nav>
 
-  <!-- Galería -->
   <main>
     <section class="products">
       <article class="product-card">
@@ -210,6 +168,13 @@
         <img src="{{ asset('img/pasteles/frutas/pstel tres filas_frutas.jpg') }}" alt="">
       </article>
     </section>
+
+    <div style="text-align:center;">
+      <a href="{{ route('login') }}" class="btn">Para pedir Iniciar sesión</a>
+      <a href="{{ route('register') }}" class="btn" style="background:#a97e5a;">Regístrate</a>
+    </div>
+
   </main>
+
 </body>
 </html>

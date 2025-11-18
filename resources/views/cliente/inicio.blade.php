@@ -41,8 +41,26 @@
       padding:10px 14px; font-weight:600;
       display:inline-flex; align-items:center; gap:6px;
       transition:background .2s ease, transform .12s ease;
+      margin-right:8px;
     }
     .back-btn:hover{background:#ffffff28; transform:translateY(-1px)}
+
+    /* Botón para abrir el menú del cliente */
+    .menu-trigger{
+      background:#ffffff20; color:#fff; border:1px solid #ffffff35;
+      border-radius:999px; padding:8px 14px;
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:.9rem; font-weight:600; cursor:pointer;
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+      transition:background .2s ease, transform .12s ease;
+    }
+    .menu-trigger span:first-child{
+      width:32px; height:32px; border-radius:999px;
+      background:#ffffff26; display:grid; place-items:center;
+      font-size:1.1rem;
+    }
+    .menu-trigger:hover{background:#ffffff30; transform:translateY(-1px)}
 
     main{ width:min(980px, 92%); margin:42px auto; display:grid; gap:18px; }
     .card{
@@ -89,6 +107,7 @@
 
     .actions{ text-align:center; padding:0 22px 26px }
     form{ display:inline }
+
     .logout{
       appearance:none; border:none; cursor:pointer;
       background:linear-gradient(180deg, var(--accent), #c86635);
@@ -117,6 +136,134 @@
     .alert-success{background:#e7f7ea;border:1px solid #b3e3b3;color:#2b6b2b}
     .alert-danger{background:#fde8e8;border:1px solid #f4b2b2;color:#8b1a1a}
     form.inline{display:inline}
+
+    /* ===== Menú lateral del cliente ===== */
+    .menu-overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      justify-content:flex-end;
+      background:rgba(0,0,0,.18);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+      z-index:60;
+    }
+    .menu-overlay.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .menu-panel{
+      width:320px;
+      max-width:82%;
+      background:#fff;
+      box-shadow:-6px 0 26px rgba(0,0,0,.18);
+      border-radius:18px 0 0 18px;
+      padding:18px 16px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      transform:translateX(100%);
+      transition:transform .22s ease;
+      overflow-y:auto;
+    }
+    .menu-overlay.open .menu-panel{
+      transform:translateX(0);
+    }
+    .menu-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:4px 4px 10px;
+      border-bottom:1px solid #f0e2d5;
+      margin-bottom:8px;
+    }
+    .menu-avatar{
+      width:42px;height:42px;border-radius:14px;
+      background:#fff3e0;
+      display:grid;place-items:center;
+      font-size:1.4rem;
+    }
+    .menu-header div span{
+      display:block;
+    }
+    .menu-header .hello{
+      font-size:.8rem;color:var(--muted);
+    }
+    .menu-header .name{
+      font-weight:700;
+    }
+    .menu-items{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:4px;
+    }
+    .menu-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid #f0e2d5;
+      background:#fffdf9;
+      cursor:pointer;
+      text-decoration:none;
+      color:var(--text);
+      transition:background .15s ease, transform .1s ease, box-shadow .15s ease;
+      box-shadow:0 8px 18px rgba(0,0,0,.03);
+    }
+    .menu-item-main{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .menu-icon{
+      width:32px;height:32px;border-radius:12px;
+      background:#ffe6c7;
+      display:grid;place-items:center;
+      font-size:1.2rem;
+    }
+    .menu-label{
+      display:flex;
+      flex-direction:column;
+      font-size:.92rem;
+    }
+    .menu-label strong{font-size:.98rem}
+    .menu-label span{color:var(--muted);font-size:.8rem}
+    .menu-item:hover{
+      background:#fff7ec;
+      transform:translateY(-1px);
+      box-shadow:0 10px 26px rgba(0,0,0,.06);
+    }
+    .menu-footer{
+      margin-top:10px;
+      padding-top:8px;
+      border-top:1px solid #f0e2d5;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .menu-close{
+      background:none;
+      border:none;
+      color:var(--muted);
+      font-size:.85rem;
+      cursor:pointer;
+      align-self:flex-start;
+      padding:4px 0;
+    }
+    .menu-logout{
+      width:100%;
+      border:none;
+      cursor:pointer;
+      padding:11px 14px;
+      border-radius:12px;
+      font-weight:700;
+      background:linear-gradient(180deg,#d77a49,#c86635);
+      color:#fff;
+      box-shadow:0 10px 24px rgba(215,122,73,.32);
+    }
   </style>
 </head>
 <body>
@@ -129,17 +276,71 @@
       </div>
     </div>
 
-    @if(auth()->check() && auth()->user()->role === 'admin')
-      <a href="{{ url()->previous() }}" class="back-btn">⬅️ Regresar</a>
-    @endif
+    <div style="display:flex;align-items:center;gap:8px">
+      @if(auth()->check() && auth()->user()->role === 'admin')
+        <a href="{{ url()->previous() }}" class="back-btn">⬅️ Regresar</a>
+      @endif
+
+      <!-- Botón que abre el menú del cliente -->
+      <button type="button" class="menu-trigger" onclick="toggleClientMenu()">
+        <span>👤</span>
+        <span>
+          <strong>{{ auth()->user()->name ?? 'Cliente' }}</strong><br>
+          <small style="opacity:.85;font-weight:400">Ver opciones</small>
+        </span>
+      </button>
+    </div>
   </header>
+
+  <!-- ========= MENÚ LATERAL CLIENTE ========= -->
+  <div id="client-menu" class="menu-overlay" aria-hidden="true">
+    <div class="menu-panel">
+      <div class="menu-header">
+        <div class="menu-avatar">👤</div>
+        <div>
+          <span class="hello">Hola,</span>
+          <span class="name">{{ auth()->user()->name ?? 'Cliente' }}</span>
+        </div>
+      </div>
+
+      <div class="menu-items">
+        <a href="{{ route('pedidos.index') }}" class="menu-item">
+          <div class="menu-item-main">
+            <div class="menu-icon">📦</div>
+            <div class="menu-label">
+              <strong>Mis pedidos</strong>
+              <span>Revisa el estado de tus pedidos</span>
+            </div>
+          </div>
+        </a>
+
+        <a href="{{ route('cliente.cotizaciones.index') }}" class="menu-item">
+          <div class="menu-item-main">
+            <div class="menu-icon">💬</div>
+            <div class="menu-label">
+              <strong>Mis cotizaciones</strong>
+              <span>Consulta y confirma tus cotizaciones</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="menu-footer">
+        <form action="{{ route('logout') }}" method="POST">
+          @csrf
+          <button type="submit" class="menu-logout">Cerrar sesión</button>
+        </form>
+        <button type="button" class="menu-close" onclick="toggleClientMenu(false)">Cerrar menú</button>
+      </div>
+    </div>
+  </div>
+  <!-- ======= FIN MENÚ LATERAL ======= -->
 
   <main role="main">
     <section class="card" aria-labelledby="bienvenida">
       <div class="card-head">
         <h2 id="bienvenida">¡Hola!</h2>
-   <p>Bienvenido, <span class="hi">{{ auth()->user()->name ?? 'Cliente' }}</span>.</p>
-
+        <p>Bienvenido, <span class="hi">{{ auth()->user()->name ?? 'Cliente' }}</span>.</p>
       </div>
 
       <div class="body" style="display:grid; gap:18px">
@@ -150,8 +351,7 @@
           <a href="{{ route('productos.publico', 'temporada') }}" class="btn btn-accent">🍁 Pasteles de temporada</a>
           <a href="{{ route('productos.publico', 'rollos') }}" class="btn btn-accent">🍥 Rollos y variedades</a>
           <a href="{{ route('productos.publico', 'frutas') }}" class="btn btn-brand2">🍓 Pasteles de frutas</a>
-          <a href="{{ route('cliente.cotizaciones.index') }}" class="btn btn-brand">💬 Mis cotizaciones</a>
-          <a href="{{ route('pedidos.index') }}" class="btn btn-light">📦 Mis pedidos</a>
+
         </div>
 
         {{-- Último pedido (opcional) --}}
@@ -176,25 +376,25 @@
         {{-- Flash messages --}}
         @if(session('ok'))    <div class="alert alert-success">{{ session('ok') }}</div> @endif
         @if(session('error')) <div class="alert alert-danger">{{ session('error') }}</div> @endif
+
         @php
-    use Illuminate\Support\Facades\Auth;
-    use App\Models\Cotizacion;
+          use Illuminate\Support\Facades\Auth;
+          use App\Models\Cotizacion;
 
-    $clienteId  = Auth::id();
+          $clienteId  = Auth::id();
 
-    // Si no vienen desde el controlador, calcúlalas aquí:
-    $pendientes = $pendientes ?? Cotizacion::where('id_cliente',$clienteId)
-                                           ->where('estado','pendiente')
-                                           ->count();
+          $pendientes = $pendientes ?? Cotizacion::where('id_cliente',$clienteId)
+                                                 ->where('estado','pendiente')
+                                                 ->count();
 
-    $cotizadas  = $cotizadas  ?? Cotizacion::where('id_cliente',$clienteId)
-                                           ->where('estado','cotizado')
-                                           ->count();
+          $cotizadas  = $cotizadas  ?? Cotizacion::where('id_cliente',$clienteId)
+                                                 ->where('estado','cotizado')
+                                                 ->count();
 
-    $ultimas    = $ultimas    ?? Cotizacion::with(['producto','pedido'])
-                                           ->where('id_cliente',$clienteId)
-                                           ->latest()->take(5)->get();
-@endphp
+          $ultimas    = $ultimas    ?? Cotizacion::with(['producto','pedido'])
+                                                 ->where('id_cliente',$clienteId)
+                                                 ->latest()->take(5)->get();
+        @endphp
 
         {{-- Resumen --}}
         <div class="chips">
@@ -225,18 +425,14 @@
                   </thead>
                   <tbody>
                     @foreach($ultimas as $c)
-                      @php
-                        $isPend = ($c->estado === 'pendiente');
-                      @endphp
+                      @php($isPend = $c->estado === 'pendiente')
                       <tr>
                         <td>{{ optional($c->created_at)->format('d/m/Y H:i') ?? '—' }}</td>
                         <td>{{ $c->producto->nombre ?? '—' }}</td>
                         <td>
-                  @php($isPend = $c->estado === 'pendiente')
-                  <span class="badge {{ $isPend ? 'badge-warn' : 'badge-ok' }}">
-                    {{ ucfirst($c->estado ?? '—') }}
-                  </span>
-
+                          <span class="badge {{ $isPend ? 'badge-warn' : 'badge-ok' }}">
+                            {{ ucfirst($c->estado ?? '—') }}
+                          </span>
                         </td>
                         <td>
                           @if(($c->estado === 'cotizado') && !is_null($c->precio))
@@ -273,17 +469,34 @@
         {{-- /Últimas cotizaciones --}}
       </div>
 
-      <div class="actions">
-        <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button type="submit" class="logout">Cerrar sesión</button>
-        </form>
-      </div>
     </section>
   </main>
 
   <footer>
     © {{ date('Y') }} Panadería y Pastelería Dayane — Panel de Cliente
   </footer>
+
+  <script>
+    function toggleClientMenu(force) {
+      const overlay = document.getElementById('client-menu');
+      if (!overlay) return;
+
+      if (typeof force === 'boolean') {
+        overlay.classList.toggle('open', force);
+      } else {
+        overlay.classList.toggle('open');
+      }
+    }
+
+    // Cerrar al hacer clic fuera del panel
+    document.addEventListener('click', function (e) {
+      const overlay = document.getElementById('client-menu');
+      if (!overlay || !overlay.classList.contains('open')) return;
+
+      if (e.target === overlay) {
+        overlay.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 </html>

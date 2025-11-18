@@ -104,6 +104,21 @@
       padding:10px;
       border-bottom:1px solid #eee;
     }
+           .btn{
+      display:inline-block;
+      text-decoration:none;
+      color:#fff;
+      background:#8b5e3c;
+      padding:12px 20px;
+      border-radius:999px;
+      font-weight:600;
+      transition:.2s;
+      margin:12px 6px;
+      font-size:18px;
+    }
+    .btn:hover{
+      background:#a97e5a;
+    }
     /* ====== Tablets ====== */
 @media (max-width: 992px) {
   header { padding: 22px 14px; }
@@ -208,6 +223,10 @@
         <img src="{{ asset('img/pasteles/temporada/pastel de rosales.jpg') }}" alt="">
       </article>
     </section>
+      <div style="text-align:center;">
+      <a href="{{ route('login') }}" class="btn">Para pedir Iniciar sesión</a>
+      <a href="{{ route('register') }}" class="btn" style="background:#a97e5a;">Regístrate</a>
+    </div>
   </main>
 </body>
 </html>

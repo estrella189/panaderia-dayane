@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ClienteController;
 
+use App\Http\Controllers\CotizacionController;
+
 
 
 
@@ -139,12 +141,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-// Cliente logueado puede ver las categorías de los pasteles
-Route::middleware('auth')->group(function () {
-    Route::get('/pasteles/{categoria}', [ProductoController::class, 'publicoPorCategoria'])
-        ->name('productos.publico');
-});
-
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     // DASHBOARD
@@ -168,7 +164,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 
 
-use App\Http\Controllers\CotizacionController;
 
 Route::middleware(['auth'])->group(function () {
     // CLIENTE: enviar cotización

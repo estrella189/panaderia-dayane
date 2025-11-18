@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pedido;
 use App\Models\PedidoItem;
+use App\Models\Producto;
 use App\Models\Productos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,7 @@ class PedidoController extends Controller
         $user = $request->user();
 
         // Buscar el producto en la base de datos (opcional)
-        $producto = Productos::where('nombre', $data['producto_nombre'])->first();
+        $producto = Producto::where('nombre', $data['producto_nombre'])->first();
         $precio   = $producto->precio ?? 0;
 
         // Crear el pedido y su ítem dentro de una transacción
@@ -48,18 +49,6 @@ class PedidoController extends Controller
                 'notas'         => $data['notas'] ?? null,
                 'estado'        => 'pendiente',
                 'total'         => $subtotal,
-            ]);
-
-            // Crear el detalle del pedido (producto solicitado)
-            PedidoItem::create([
-                'pedido_id'        => $pedido->id,
-                'producto_id'      => $producto->id ?? null,
-                'producto_nombre'  => $data['producto_nombre'],
-                'cantidad'         => $data['cantidad'],
-                'tamanio'          => $data['tamanio'] ?? null,
-                'sabor'            => $data['sabor'] ?? null,
-                'precio_unitario'  => $precio,
-                'subtotal'         => $subtotal,
             ]);
 
             // Redirigir con mensaje de éxito
@@ -84,7 +73,7 @@ class PedidoController extends Controller
         ]);
 
         $user = $request->user();
-        $producto = Productos::findOrFail($data['producto_id']);
+        $producto = Producto::findOrFail($data['producto_id']);
         $precio = $producto->precio ?? 0;
 
         return DB::transaction(function () use ($user, $data, $precio, $producto) {
@@ -96,16 +85,6 @@ class PedidoController extends Controller
                 'notas'         => $data['notas'] ?? null,
                 'estado'        => 'pendiente',
                 'total'         => $subtotal,
-            ]);
-
-            PedidoItem::create([
-                'pedido_id'       => $pedido->id,
-                'producto_id'     => $producto->id,
-                'cantidad'        => $data['cantidad'],
-                'tamanio'         => $data['tamanio'] ?? null,
-                'sabor'           => $data['sabor'] ?? null,
-                'precio_unitario' => $precio,
-                'subtotal'        => $subtotal,
             ]);
 
             return redirect()
