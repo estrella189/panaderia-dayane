@@ -9,25 +9,54 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CotizacionClienteController extends Controller
-
 {
- public function panel()
-{
-    $clienteId  = Auth::id();
+    public function panel(Request $request)
+    {
+        $user = Auth::user();
 
-    $pendientes = Cotizacion::where('id_cliente',$clienteId)
-                    ->where('estado','pendiente')->count();
+        // ADMIN viendo panel de cliente
+        if ($user->role === 'admin') {
+            $clienteId = $request->cliente_id;
 
-    $cotizadas  = Cotizacion::where('id_cliente',$clienteId)
-                    ->where('estado','cotizado')->count();
+            if (!$clienteId) {
+                return redirect()
+                    ->route('admin.clientes.seleccionar')
+                    ->with('error', 'Selecciona un cliente.');
+            }
+        } else {
+            // Cliente normal
+            $clienteId = $user->id;
+        }
 
-    $ultimas    = Cotizacion::with(['producto','pedido'])
-                    ->where('id_cliente',$clienteId)
-                    ->latest()->take(5)->get();
+        // Datos del cliente
+        $pendientes = Cotizacion::where('id_cliente', $clienteId)
+            ->where('estado','pendiente')
+            ->count();
 
-    // usa la vista que corresponda: cliente.inicio o cliente.panel
-    return view('cliente.inicio', compact('pendientes','cotizadas','ultimas'));
-}
+        $cotizadas = Cotizacion::where('id_cliente', $clienteId)
+            ->where('estado','cotizado')
+            ->count();
+
+        $ultimas = Cotizacion::with(['producto','pedido'])
+            ->where('id_cliente',$clienteId)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $pedidos = Pedido::where('id_cliente', $clienteId)
+            ->orderByDesc('created_at')
+            ->get();
+
+        // ADMIN → Vista especial de SOLO LISTAS
+        if ($user->role === 'admin') {
+            return view('admin.clientes.panel',
+                compact('pendientes','cotizadas','ultimas','pedidos'));
+        }
+
+        // CLIENTE → Vista normal
+        return view('cliente.inicio',
+            compact('pendientes','cotizadas','ultimas','pedidos'));
+    }
+
     public function index(Request $request)
     {
         $cotizaciones = Cotizacion::with(['producto','pedido'])
@@ -41,7 +70,9 @@ class CotizacionClienteController extends Controller
     public function show(Cotizacion $cotizacion)
     {
         if ($cotizacion->id_cliente !== Auth::id()) abort(403);
+
         $cotizacion->load(['producto','pedido']);
+
         return view('cliente.cotizaciones.show', compact('cotizacion'));
     }
 
@@ -49,12 +80,10 @@ class CotizacionClienteController extends Controller
     {
         if ($cotizacion->id_cliente !== Auth::id()) abort(403);
 
-        // Solo se puede confirmar si ya está cotizada y con precio
         if ($cotizacion->estado !== 'cotizado' || is_null($cotizacion->precio)) {
             return back()->with('error', 'Aún no ha sido cotizada por el administrador.');
         }
 
-        // Evitar duplicados: si ya existe pedido para esta cotización, no crear otro
         if ($cotizacion->pedido) {
             return back()->with('ok', 'Este pedido ya fue creado.');
         }
@@ -63,13 +92,54 @@ class CotizacionClienteController extends Controller
             Pedido::create([
                 'id_cliente'   => $cotizacion->id_cliente,
                 'id_cotizacion'=> $cotizacion->id,
-                'estado'       => 'pendiente', // según tu enum
+                'estado'       => 'pendiente',
             ]);
-
-            // Si quieres marcar la cotización como "aceptada", agrega otro estado en tu enum.
-            // $cotizacion->update(['estado' => 'aceptada']);
         });
 
         return redirect()->route('cliente.cotizaciones.index')->with('ok', 'Pedido creado correctamente.');
     }
+    public function edit(Cotizacion $cotizacion)
+{
+    if ($cotizacion->id_cliente !== Auth::id()) {
+        abort(403);
+    }
+
+    if ($cotizacion->pedido) {
+        return redirect()
+            ->route('cliente.cotizaciones.show', $cotizacion->id)
+            ->with('error', 'Esta cotización ya tiene un pedido asociado y no se puede editar.');
+    }
+
+    $cotizacion->load('producto');
+
+    return view('cliente.cotizaciones.edit', compact('cotizacion'));
+}
+
+public function update(Request $request, Cotizacion $cotizacion)
+{
+    if ($cotizacion->id_cliente !== Auth::id()) {
+        abort(403);
+    }
+
+    if ($cotizacion->pedido) {
+        return redirect()
+            ->route('cliente.cotizaciones.show', $cotizacion->id)
+            ->with('error', 'Esta cotización ya tiene un pedido asociado y no se puede editar.');
+    }
+
+    $validated = $request->validate([
+        'mensaje' => 'required|string|max:500',
+    ]);
+
+    $cotizacion->update([
+        'mensaje' => $validated['mensaje'],
+        'estado'  => 'pendiente',
+        'precio'  => null,
+    ]);
+
+    return redirect()
+        ->route('cliente.cotizaciones.show', $cotizacion->id)
+        ->with('ok', 'La cotización se actualizó. El administrador la revisará nuevamente.');
+}
+
 }

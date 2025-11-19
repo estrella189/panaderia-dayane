@@ -11,6 +11,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\ClienteController;
 
 use App\Http\Controllers\CotizacionController;
+use App\Models\User;
 
 
 
@@ -199,6 +200,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/mis-cotizaciones/{cotizacion}/confirmar', [CotizacionClienteController::class, 'confirmarPedido'])
         ->name('cliente.cotizaciones.confirmar');
+
+    Route::get('/mis-cotizaciones/{cotizacion}/editar', [CotizacionClienteController::class, 'edit'])
+    ->name('cliente.cotizaciones.edit');
+
+Route::put('/mis-cotizaciones/{cotizacion}', [CotizacionClienteController::class, 'update'])
+    ->name('cliente.cotizaciones.update');
+
+
+    
 });
 
 
@@ -222,3 +232,24 @@ Route::middleware(['auth'])->prefix('cliente')->name('cliente.')->group(function
 
 
 
+// ==========================
+// ADMIN: Seleccionar cliente
+// ==========================
+Route::middleware(['auth'])->group(function () {
+
+    // Vista con la lista de clientes
+    Route::get('/admin/clientes/seleccionar', function () {
+        $u = Auth::user();
+        abort_unless($u && $u->role === 'admin', 403);
+
+        $clientes = User::where('role', 'cliente')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.clientes.seleccionar', compact('clientes'));
+    })->name('admin.clientes.seleccionar');
+
+    // Mostrar panel del cliente con cliente_id (ADMIN O CLIENTE)
+    Route::get('/cliente/panel', [CotizacionClienteController::class, 'panel'])
+        ->name('cliente.panel');
+});

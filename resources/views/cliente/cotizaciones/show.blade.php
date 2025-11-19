@@ -65,5 +65,11 @@
       <a class="btn" href="{{ route('cliente.cotizaciones.index') }}">Volver al listado</a>
     @endif
   </div>
+  @if(empty($cotizacion->pedido))
+  <a href="{{ route('cliente.cotizaciones.edit', $cotizacion->id) }}" class="btn btn-brand2">
+    Editar cotización
+  </a>
+@endif
+
 </body>
 </html>

@@ -195,7 +195,7 @@
           </a>
 
           <a href="{{ route('empleado.panel') }}"><span class="emoji">👩‍🍳</span> Ver Panel Empleado</a>
-          <a href="{{ route('cliente.panel') }}"><span class="emoji">🛍️</span> Ver Página Cliente</a>
+          <a href="{{ route('admin.clientes.seleccionar') }}"><span class="emoji">🛍️</span> Ver Página Cliente</a>
 
           <form action="{{ route('logout') }}" method="POST">
             @csrf
