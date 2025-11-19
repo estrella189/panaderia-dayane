@@ -63,16 +63,22 @@
   @endif
 
   <main>
+    @if($productos->isEmpty())
+      <p style="text-align:center; margin-top:20px;">No hay pasteles de chocolate registrados.</p>
+    @endif
+
     <section class="products">
-      <!-- 1 -->
+      @foreach($productos as $producto)
       <article class="product-card">
-        <img src="{{ asset('img/pasteles/chocolate/pastel de chocolate.jpg') }}" alt="Pastel de Chocolate">
+        {{-- en la BD guarda algo como: img/pasteles/chocolate/pastel-de-chocolate.jpg --}}
+        <img src="{{ asset($producto->imagen) }}" alt="{{ $producto->nombre }}">
         <div class="card-body">
-          <h3 style="margin:0">Pastel de Chocolate</h3>
+          <h3 style="margin:0">{{ $producto->nombre }}</h3>
+
           @auth
           <form method="POST" action="{{ route('cotizaciones.store') }}" class="grid" style="display:grid;gap:8px">
             @csrf
-            <input type="hidden" name="producto_nombre" value="Pastel de Chocolate">
+            <input type="hidden" name="producto_nombre" value="{{ $producto->nombre }}">
             <label>Cantidad
               <input class="input" type="number" name="cantidad" min="1" value="1">
             </label>
@@ -101,120 +107,7 @@
           @endauth
         </div>
       </article>
-
-      <!-- 2 -->
-      <article class="product-card">
-        <img src="{{ asset('img/pasteles/chocolate/chocolate1.jpg') }}" alt="Pastel de Chocolate Especial">
-        <div class="card-body">
-          <h3 style="margin:0">Pastel de Chocolate Especial</h3>
-          @auth
-          <form method="POST" action="{{ route('cotizaciones.store') }}" style="display:grid;gap:8px">
-            @csrf
-            <input type="hidden" name="producto_nombre" value="Pastel de Chocolate Especial">
-            <label>Cantidad
-              <input class="input" type="number" name="cantidad" min="1" value="1">
-            </label>
-            <label>Fecha de entrega
-              <input class="input" type="date" name="fecha_entrega">
-            </label>
-            <label>Mensaje (opcional)
-              <input class="input" type="text" name="mensaje_pastel" maxlength="255">
-            </label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <label>Tamaño
-                <select class="select" name="tamano">
-                  <option value="">—</option><option>Chico</option><option>Mediano</option><option>Grande</option>
-                </select>
-              </label>
-              <label>Sabor
-                <select class="select" name="sabor">
-                  <option value="">—</option><option>Chocolate</option><option>Vainilla</option><option>Fresa</option>
-                </select>
-              </label>
-            </div>
-            <button class="btn" type="submit">Pedir cotización</button>
-          </form>
-          @else
-            <a href="{{ route('login') }}" class="btn">Inicia sesión para cotizar</a>
-          @endauth
-        </div>
-      </article>
-
-      <!-- 3 -->
-      <article class="product-card">
-        <img src="{{ asset('img/pasteles/chocolate/pastel de chocolate_cereza.jpg') }}" alt="Pastel de Chocolate con Cereza">
-        <div class="card-body">
-          <h3 style="margin:0">Pastel de Chocolate con Cereza</h3>
-          @auth
-          <form method="POST" action="{{ route('cotizaciones.store') }}" style="display:grid;gap:8px">
-            @csrf
-            <input type="hidden" name="producto_nombre" value="Pastel de Chocolate con Cereza">
-            <label>Cantidad
-              <input class="input" type="number" name="cantidad" min="1" value="1">
-            </label>
-            <label>Fecha de entrega
-              <input class="input" type="date" name="fecha_entrega">
-            </label>
-            <label>Mensaje (opcional)
-              <input class="input" type="text" name="mensaje_pastel" maxlength="255">
-            </label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <label>Tamaño
-                <select class="select" name="tamano">
-                  <option value="">—</option><option>Chico</option><option>Mediano</option><option>Grande</option>
-                </select>
-              </label>
-              <label>Sabor
-                <select class="select" name="sabor">
-                  <option value="">—</option><option>Chocolate</option><option>Vainilla</option><option>Fresa</option>
-                </select>
-              </label>
-            </div>
-            <button class="btn" type="submit">Pedir cotización</button>
-          </form>
-          @else
-            <a href="{{ route('login') }}" class="btn">Inicia sesión para cotizar</a>
-          @endauth
-        </div>
-      </article>
-
-      <!-- 4 -->
-      <article class="product-card">
-        <img src="{{ asset('img/pasteles/chocolate/nuezconchocolate.jpg') }}" alt="Pastel de nuez con chocolate">
-        <div class="card-body">
-          <h3 style="margin:0">Chocolate con Nuez</h3>
-          @auth
-          <form method="POST" action="{{ route('cotizaciones.store') }}" style="display:grid;gap:8px">
-            @csrf
-            <input type="hidden" name="producto_nombre" value="Chocolate con Nuez">
-            <label>Cantidad
-              <input class="input" type="number" name="cantidad" min="1" value="1">
-            </label>
-            <label>Fecha de entrega
-              <input class="input" type="date" name="fecha_entrega">
-            </label>
-            <label>Mensaje (opcional)
-              <input class="input" type="text" name="mensaje_pastel" maxlength="255">
-            </label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <label>Tamaño
-                <select class="select" name="tamano">
-                  <option value="">—</option><option>Chico</option><option>Mediano</option><option>Grande</option>
-                </select>
-              </label>
-              <label>Sabor
-                <select class="select" name="sabor">
-                  <option value="">—</option><option>Chocolate</option><option>Vainilla</option><option>Fresa</option>
-                </select>
-              </label>
-            </div>
-            <button class="btn" type="submit">Pedir cotización</button>
-          </form>
-          @else
-            <a href="{{ route('login') }}" class="btn">Inicia sesión para cotizar</a>
-          @endauth
-        </div>
-      </article>
+      @endforeach
     </section>
   </main>
 </body>

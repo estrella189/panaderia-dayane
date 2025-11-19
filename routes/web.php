@@ -160,6 +160,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('productos.destroy');
 
 });
+// AJAX para obtener subcategorías según categoría
+Route::get('/subcategorias/{id}', [ProductoController::class, 'getSubcategorias']);
+
 
 
 

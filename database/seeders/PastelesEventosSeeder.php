@@ -46,7 +46,7 @@ class PastelesEventosSeeder extends Seeder
 
         foreach ($items as $it) {
             DB::table('productos')->insert([
-                'id_subcategoria' => 2, // tu subcategoría de eventos
+                'id_subcategoria' => 7, // tu subcategoría de eventos
                 'nombre'          => $it['nombre'],
                 'descripcion'     => null,
                 'imagen'          => 'img/pasteles/eventos/' . $it['evento'],

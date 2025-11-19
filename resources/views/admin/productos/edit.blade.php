@@ -1,78 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Editar Producto</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        input, textarea, select { width: 100%; padding: 8px; margin-bottom: 15px; }
-        button { padding: 10px; background: blue; color: white; border: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Producto</title>
+
+  <style>
+    body{
+      font-family:'Trebuchet MS',sans-serif;
+      background:#f9f9f9;
+      margin:0;
+    }
+    header{
+      background:#8b5e3c;
+      padding:20px;
+      color:#fff;
+      text-align:center;
+      font-size:26px;
+    }
+    .container{
+      max-width:700px;
+      margin:30px auto;
+      background:#fff;
+      padding:24px;
+      border-radius:12px;
+      box-shadow:0 6px 20px rgba(0,0,0,.1);
+    }
+    label{
+      display:block;
+      margin-bottom:10px;
+      font-weight:bold;
+    }
+    select,input,textarea{
+      width:100%;
+      padding:10px;
+      margin-top:6px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    }
+    .btn{
+      background:#8b5e3c;
+      color:#fff;
+      padding:12px 18px;
+      border-radius:8px;
+      display:inline-block;
+      text-decoration:none;
+      margin-top:18px;
+    }
+    .btn-secondary{
+      background:#555;
+    }
+    img.preview{
+      width:160px;
+      border-radius:8px;
+      margin-top:12px;
+      border:1px solid #ccc;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>Editar Producto</h1>
+<header>Editar Producto</header>
 
-<form action="{{ route('admin.productos.update', $producto->id) }}" method="POST" enctype="multipart/form-data">
+<div class="container">
+
+  <form method="POST"
+        action="{{ route('admin.productos.update', $producto->id) }}"
+        enctype="multipart/form-data">
+
     @csrf
     @method('PUT')
 
-    <label>Categoría:</label>
-    <select id="categoria">
+    {{-- CATEGORÍA --}}
+    <label>Categoría:
+      <select id="categoria">
         @foreach($categorias as $cat)
-            <option value="{{ $cat->id }}"
-                {{ $cat->id == $producto->subcategoria->id_categoria ? 'selected' : '' }}>
-                {{ $cat->nombre }}
-            </option>
+          <option value="{{ $cat->id }}"
+            {{ $producto->subcategoria->id_categoria == $cat->id ? 'selected' : '' }}>
+            {{ $cat->nombre }}
+          </option>
         @endforeach
-    </select>
+      </select>
+    </label>
 
-    <label>Subcategoría:</label>
-    <select name="id_subcategoria" id="subcategoria"></select>
+    {{-- SUBCATEGORÍA --}}
+    <label>Subcategoría:
+      <select name="id_subcategoria" id="subcategoria">
+        @foreach($subcategorias as $sub)
+          <option value="{{ $sub->id }}"
+            {{ $producto->id_subcategoria == $sub->id ? 'selected' : '' }}>
+            {{ $sub->nombre }}
+          </option>
+        @endforeach
+      </select>
+    </label>
 
-    <label>Nombre:</label>
-    <input type="text" name="nombre" value="{{ $producto->nombre }}">
+    {{-- NOMBRE --}}
+    <label>Nombre del producto:
+      <input type="text" name="nombre" value="{{ $producto->nombre }}" required>
+    </label>
 
-    <label>Descripción:</label>
-    <textarea name="descripcion">{{ $producto->descripcion }}</textarea>
+    {{-- DESCRIPCIÓN --}}
+    <label>Descripción:
+      <textarea name="descripcion">{{ $producto->descripcion }}</textarea>
+    </label>
 
-    <label>Imagen actual:</label><br>
+    {{-- IMAGEN ACTUAL --}}
+    <label>Imagen actual:</label>
     @if($producto->imagen)
-        <img src="/imagenes/{{ $producto->imagen }}" width="100"><br><br>
+      <img src="{{ asset($producto->imagen) }}" class="preview">
+    @else
+      <p>No tiene imagen</p>
     @endif
 
-    <label>Nueva imagen (opcional):</label>
-    <input type="file" name="imagen">
+    {{-- CAMBIAR IMAGEN --}}
+    <label>Nueva imagen:
+      <input type="file" name="imagen">
+    </label>
 
-    <button type="submit">Actualizar</button>
-</form>
+    <button class="btn" type="submit">Guardar cambios</button>
+    <a href="{{ route('admin.productos.index') }}" class="btn btn-secondary">Cancelar</a>
+
+  </form>
+
+</div>
 
 <script>
-let categoriaId = document.getElementById('categoria').value;
-let subcategoriaActual = "{{ $producto->id_subcategoria }}";
-
-fetch('/api/subcategorias/' + categoriaId)
+document.getElementById('categoria').addEventListener('change', function() {
+  fetch('/subcategorias/' + this.value)
     .then(res => res.json())
     .then(data => {
-        let sub = document.getElementById('subcategoria');
-        sub.innerHTML = '';
-
-        data.forEach(s => {
-            let selected = (s.id == subcategoriaActual) ? 'selected' : '';
-            sub.innerHTML += `<option value="${s.id}" ${selected}>${s.nombre}</option>`;
-        });
+      let opciones = '';
+      data.forEach(s => {
+        opciones += `<option value="${s.id}">${s.nombre}</option>`;
+      });
+      document.getElementById('subcategoria').innerHTML = opciones;
     });
-
-document.getElementById('categoria').addEventListener('change', function() {
-    fetch('/api/subcategorias/' + this.value)
-        .then(res => res.json())
-        .then(data => {
-            let sub = document.getElementById('subcategoria');
-            sub.innerHTML = '';
-
-            data.forEach(s => {
-                sub.innerHTML += `<option value="${s.id}">${s.nombre}</option>`;
-            });
-        });
 });
 </script>
 

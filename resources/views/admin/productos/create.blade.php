@@ -1,51 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Agregar Producto</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Producto</title>
+
+  <style>
+    body{font-family:'Trebuchet MS',sans-serif;background:#f9f9f9;margin:0}
+    header{background:#8b5e3c;padding:20px;color:#fff;text-align:center;font-size:26px}
+    .container{
+      max-width:700px;margin:30px auto;background:#fff;padding:24px;
+      border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.1);
+    }
+    label{display:block;margin-bottom:10px;font-weight:bold}
+    select,input,textarea{
+      width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #ccc;
+    }
+    .btn{
+      background:#8b5e3c;color:#fff;padding:12px 18px;border-radius:8px;
+      display:inline-block;text-decoration:none;margin-top:14px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>Agregar Producto</h1>
+<header>Agregar Producto</header>
 
-<form action="{{ route('admin.productos.store') }}" method="POST" enctype="multipart/form-data">
+<div class="container">
+
+  <form method="POST" action="{{ route('admin.productos.store') }}" enctype="multipart/form-data">
     @csrf
 
-    <label>Categoría:</label><br>
-    <select id="categoria">
-        <option value="">Seleccione...</option>
+    <label>Categoría:
+      <select id="categoria">
+        <option value="">Seleccione una categoría</option>
         @foreach($categorias as $cat)
-            <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
+          <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
         @endforeach
-    </select><br><br>
+      </select>
+    </label>
 
-    <label>Subcategoría:</label><br>
-    <select name="id_subcategoria" id="subcategoria"></select><br><br>
+    <label>Subcategoría:
+      <select name="id_subcategoria" id="subcategoria">
+        <option value="">Seleccione una subcategoría</option>
+      </select>
+    </label>
 
-    <label>Nombre:</label><br>
-    <input type="text" name="nombre"><br><br>
+    <label>Nombre del producto:
+      <input type="text" name="nombre" required>
+    </label>
 
-    <label>Descripción:</label><br>
-    <textarea name="descripcion"></textarea><br><br>
+    <label>Descripción:
+      <textarea name="descripcion"></textarea>
+    </label>
 
-    <label>Imagen:</label><br>
-    <input type="file" name="imagen"><br><br>
+    <label>Imagen:
+      <input type="file" name="imagen">
+    </label>
 
-    <button>Guardar</button>
-</form>
+    <button class="btn" type="submit">Guardar</button>
+    <a href="{{ route('admin.productos.index') }}" class="btn" style="background:#555">Cancelar</a>
+
+  </form>
+
+</div>
 
 <script>
 document.getElementById('categoria').addEventListener('change', function() {
-    fetch('/api/subcategorias/' + this.value)
-        .then(r => r.json())
-        .then(data => {
-            let sub = document.getElementById('subcategoria');
-            sub.innerHTML = '';
-            data.forEach(s => {
-                sub.innerHTML += `<option value="${s.id}">${s.nombre}</option>`;
-            });
-        });
+  fetch('/subcategorias/' + this.value)
+    .then(res => res.json())
+    .then(data => {
+      let opciones = '<option value="">Seleccione</option>';
+      data.forEach(s => {
+        opciones += `<option value="${s.id}">${s.nombre}</option>`;
+      });
+      document.getElementById('subcategoria').innerHTML = opciones;
+    });
 });
 </script>
 
 </body>
 </html>
+

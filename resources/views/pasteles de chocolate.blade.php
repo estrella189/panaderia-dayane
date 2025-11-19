@@ -149,7 +149,7 @@
       </article>
 
       <article class="product-card">
-        <img src="{{ asset('img/pasteles/chocolate/chocolate1.jpg') }}" alt="">
+        <img src="{{ asset('img/pasteles/chocolate/1763584321.jpg') }}" alt="">
       </article>
 
       <article class="product-card">
