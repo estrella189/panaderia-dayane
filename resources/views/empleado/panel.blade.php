@@ -77,7 +77,6 @@
       padding:6px 10px;border-radius:10px;color:#fff;font-weight:700;font-size:.85rem;
     }
     .pendiente{background:var(--warn);color:#000}
-    .en_proceso{background:var(--accent)}
     .entregado{background:var(--ok)}
     .cancelado{background:var(--danger)}
 
@@ -135,11 +134,6 @@
          class="menu-item {{ $filtro === 'pendiente' ? 'active' : '' }}"
          style="padding:6px 12px;font-size:.8rem;">
         Sin responder
-      </a>
-      <a href="{{ route('empleado.panel',['estado'=>'en_proceso']) }}"
-         class="menu-item {{ $filtro === 'en_proceso' ? 'active' : '' }}"
-         style="padding:6px 12px;font-size:.8rem;">
-        En proceso
       </a>
       <a href="{{ route('empleado.panel',['estado'=>'entregado']) }}"
          class="menu-item {{ $filtro === 'entregado' ? 'active' : '' }}"

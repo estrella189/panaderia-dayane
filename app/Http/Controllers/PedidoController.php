@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
 use App\Models\Producto;
-use App\Models\Productos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PedidoController extends Controller
 {
@@ -15,6 +15,39 @@ class PedidoController extends Controller
     {
         // Solo usuarios autenticados pueden hacer pedidos
         $this->middleware('auth');
+    }
+
+    /**
+     * LISTA: Mis pedidos del cliente autenticado
+     */
+    public function index()
+    {
+        $clienteId = Auth::id();
+
+        // Pedidos ligados a cotizaciones (id_cliente + relación cotizacion.producto)
+        $pedidos = Pedido::with(['cotizacion.producto'])
+            ->where('id_cliente', $clienteId)
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return view('cliente.pedidos.index', compact('pedidos'));
+    }
+
+    /**
+     * DETALLE de un pedido
+     */
+    public function show(Pedido $pedido)
+    {
+        $clienteId = Auth::id();
+
+        // Seguridad: que el pedido sea del cliente logueado
+        if ($pedido->id_cliente !== $clienteId) {
+            abort(403, 'No puedes ver este pedido.');
+        }
+
+        $pedido->load(['cotizacion.producto']);
+
+        return view('cliente.pedidos.show', compact('pedido'));
     }
 
     /**
@@ -38,11 +71,11 @@ class PedidoController extends Controller
         $producto = Producto::where('nombre', $data['producto_nombre'])->first();
         $precio   = $producto->precio ?? 0;
 
-        // Crear el pedido y su ítem dentro de una transacción
+        // Crear el pedido dentro de una transacción
         return DB::transaction(function () use ($user, $data, $producto, $precio) {
             $subtotal = $precio * $data['cantidad'];
 
-            // Crear el pedido principal
+            // Crear el pedido principal (para pedidos rápidos)
             $pedido = Pedido::create([
                 'user_id'       => $user->id,
                 'fecha_entrega' => $data['fecha_entrega'],
@@ -51,7 +84,6 @@ class PedidoController extends Controller
                 'total'         => $subtotal,
             ]);
 
-            // Redirigir con mensaje de éxito
             return redirect()
                 ->back()
                 ->with('ok', '¡Tu pedido fue registrado exitosamente! #'.$pedido->id);
@@ -59,7 +91,7 @@ class PedidoController extends Controller
     }
 
     /**
-     * Método genérico para pedidos con producto_id (si en el futuro lo usas)
+     * Método genérico para pedidos con producto_id
      */
     public function store(Request $request)
     {
@@ -92,5 +124,4 @@ class PedidoController extends Controller
                 ->with('ok', '¡Tu pedido fue registrado exitosamente! #'.$pedido->id);
         });
     }
-    
 }

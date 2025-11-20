@@ -253,3 +253,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cliente/panel', [CotizacionClienteController::class, 'panel'])
         ->name('cliente.panel');
 });
+
+// =========================
+// MÓDULO: Mis pedidos cliente
+// =========================
+Route::middleware('auth')->prefix('cliente')->group(function () {
+
+    // Listado de pedidos
+    Route::get('/mis-pedidos', [PedidoController::class, 'index'])
+        ->name('cliente.pedidos.index');
+
+    // Ver detalle de un pedido
+    Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])
+        ->name('cliente.pedidos.show');
+});

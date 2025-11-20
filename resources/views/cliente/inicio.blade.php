@@ -304,7 +304,7 @@
       </div>
 
       <div class="menu-items">
-        <a href="{{ route('pedidos.index') }}" class="menu-item">
+        <a href="{{ route('cliente.pedidos.index') }}" class="menu-item">
           <div class="menu-item-main">
             <div class="menu-icon">📦</div>
             <div class="menu-label">
