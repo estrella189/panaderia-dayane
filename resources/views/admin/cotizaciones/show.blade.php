@@ -179,7 +179,7 @@
       </div>
     </div>
     @else
-    <a href="{{ route('admin.cotizaciones.index') }}" class="btn btn-outline-secondary">Volver al listado</a>
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">Volver al inicio</a>
     @endif
   </div>
 </body>

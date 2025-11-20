@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel — Gestión de Productos</title>
+  <title>Gestión de Productos</title>
 
   <style>
     :root{
-      --cafe:#8b5e3c;
-      --cafe2:#a97e5a;
-      --cafe-suave:#f4e4d3;
-      --bg:#f7f3ee;
+      --cafe:#5b331c;
+      --cafe-2:#9a5a30;
+      --cafe-3:#d48a4a;
+      --bg1:#fff3e2;
+      --bg2:#f0d3bb;
       --card:#ffffff;
-      --rojo:#c94b4b;
-      --rojo-hover:#aa3434;
-      --texto:#3a281c;
+      --rojo:#d04646;
+      --rojo-hover:#aa2f2f;
+      --texto:#2f1e14;
+      --muted:#7a6757;
+      --line:#e3cdb8;
+      --badge:#f9e1c7;
     }
 
     *{box-sizing:border-box;}
@@ -22,40 +26,120 @@
     body{
       margin:0;
       font-family:'Trebuchet MS', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:var(--bg);
+      background:
+        radial-gradient(1100px 700px at 12% -5%, #ffe0c0 0, #fff7f0 32%, #f6ddc9 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
       color:var(--texto);
+      min-height:100vh;
     }
 
-    /* Barra superior */
+    /* ===== TOP BAR ===== */
     header{
-      background:linear-gradient(135deg, #956644, #7b5436);
-      padding:22px 18px;
+      background:linear-gradient(135deg, #5b331c, #9a5a30);
+      padding:14px 18px;
       color:#fff;
-      text-align:center;
-      box-shadow:0 6px 18px rgba(0,0,0,.18);
+      box-shadow:0 10px 26px rgba(0,0,0,.28);
+      position:sticky;
+      top:0;
+      z-index:50;
     }
-    header h1{
+    .header-inner{
+      max-width:1120px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .brand-logo{
+      width:40px;
+      height:40px;
+      border-radius:14px;
+      background:radial-gradient(circle at 30% 20%, #fff 0, #ffe7cf 35%, transparent 70%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      box-shadow:0 8px 22px rgba(0,0,0,.35);
+    }
+    .brand-text h1{
       margin:0;
-      font-size:clamp(22px,3vw,30px);
-      letter-spacing:.5px;
+      font-size:clamp(20px,2.7vw,24px);
+      letter-spacing:.6px;
     }
-    header span{
-      font-size:14px;
-      opacity:.9;
+    .brand-text span{
+      font-size:12px;
+      opacity:.92;
     }
 
-    /* Tarjeta principal */
+    .header-badge{
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.4);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+    }
+    .header-badge strong{
+      font-weight:700;
+    }
+
+    /* ===== CONTENEDOR PRINCIPAL ===== */
     .wrapper{
       max-width:1120px;
       margin:26px auto 40px;
       padding:0 16px;
     }
+
     .card{
       background:var(--card);
-      border-radius:22px;
-      padding:24px 22px 26px;
-      box-shadow:0 14px 40px rgba(0,0,0,.12);
-      border:1px solid #f0dfcf;
+      border-radius:24px;
+      padding:22px 22px 26px;
+      box-shadow:0 22px 50px rgba(56,28,11,.32);
+      border:1px solid rgba(255,255,255,.7);
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Glow decorativo */
+    .card::before{
+      content:"";
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.95), rgba(255,255,255,0));
+      top:-120px;
+      right:-60px;
+      opacity:.9;
+      pointer-events:none;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:radial-gradient(circle at 10% 80%, rgba(250,207,154,.9), rgba(250,207,154,0));
+      bottom:-110px;
+      left:-40px;
+      opacity:.7;
+      pointer-events:none;
+    }
+
+    .card-inner{
+      position:relative;
+      z-index:5;
     }
 
     .card-header{
@@ -64,37 +148,63 @@
       align-items:flex-start;
       gap:14px;
       margin-bottom:18px;
+      flex-wrap:wrap;
     }
 
     .title-block{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       gap:10px;
     }
     .title-icon{
-      width:26px;
-      height:26px;
-      border-radius:9px;
-      background:var(--cafe-suave);
+      width:36px;
+      height:36px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#fbe4c9,#f7c18b);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:18px;
+      font-size:20px;
+      box-shadow:0 8px 20px rgba(0,0,0,.16);
     }
     .title-block h2{
       margin:0;
-      font-size:22px;
+      font-size:21px;
+      color:var(--cafe);
     }
     .title-block p{
-      margin:2px 0 0;
+      margin:3px 0 0;
       font-size:13px;
-      color:#7a6757;
+      color:var(--muted);
+    }
+
+    .mini-stats{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      font-size:11px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid #edd3b8;
+      background:rgba(255,248,239,.9);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#765237;
+    }
+    .pill strong{
+      font-size:12px;
+      color:var(--cafe);
     }
 
     .actions-header{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
     .btn,
@@ -114,41 +224,38 @@
     }
 
     .btn{
-      background:var(--cafe);
+      background:linear-gradient(135deg,#5b331c,#9a5a30);
       color:#fff;
-      box-shadow:0 6px 16px rgba(139,94,60,.35);
+      box-shadow:0 10px 26px rgba(52,24,8,.65);
     }
     .btn:hover{
-      background:#70492f;
+      background:linear-gradient(135deg,#482415,#834722);
       transform:translateY(-1px);
-      box-shadow:0 10px 22px rgba(139,94,60,.5);
+      box-shadow:0 13px 30px rgba(52,24,8,.8);
     }
 
     .btn-sec{
-      background:#f1ebe4;
+      background:rgba(255,255,255,.8);
       color:#5a4a3a;
-      border:1px solid #e1d2c3;
+      border:1px solid #dec8b4;
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px);
     }
     .btn-sec:hover{
-      background:#e5d4c1;
+      background:#f3e3d3;
     }
 
-    .tag{
-      font-size:11px;
-      padding:3px 9px;
-      border-radius:999px;
-      background:#fff6ec;
-      color:#9a6a3b;
-      border:1px solid #f1ddc5;
-      margin-left:4px;
+    .icon{
+      font-size:15px;
     }
 
-    /* Tabla */
+    /* ===== TABLA ===== */
     .table-wrap{
-      margin-top:10px;
+      margin-top:6px;
       border-radius:18px;
       overflow:hidden;
       border:1px solid #f1e1d2;
+      background:#fff;
     }
 
     table{
@@ -157,33 +264,71 @@
       background:#fff;
     }
     thead{
-      background:#e2c09a;
+      background:linear-gradient(90deg,#5b331c,#9a5a30,#d48a4a);
       color:#fff;
     }
     th,td{
-      padding:14px 12px;
+      padding:12px 12px;
       font-size:14px;
       text-align:left;
     }
     th{
       font-weight:600;
       letter-spacing:.4px;
+      text-transform:uppercase;
+      font-size:12px;
     }
     tbody tr:nth-child(even){
-      background:#fdf8f3;
+      background:#fdf6ef;
     }
     tbody tr:hover{
-      background:#f8efe6;
+      background:#f7ebdd;
+    }
+
+    th:nth-child(1),
+    td:nth-child(1){
+      width:110px;
+    }
+    th:nth-child(4),
+    td:nth-child(4){
+      width:210px;
     }
 
     .thumb{
-      width:70px;
-      height:70px;
-      border-radius:14px;
+      width:72px;
+      height:72px;
+      border-radius:16px;
       object-fit:cover;
       border:1px solid #e1d2c3;
-      box-shadow:0 4px 10px rgba(0,0,0,.12);
+      box-shadow:0 5px 14px rgba(0,0,0,.16);
       background:#fff;
+    }
+
+    .no-img{
+      width:72px;
+      height:72px;
+      border-radius:16px;
+      border:1px dashed #d3c3b4;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      color:#a08971;
+      background:#fffdf9;
+      text-align:center;
+      padding:4px;
+    }
+
+    .nombre{
+      font-weight:700;
+      display:block;
+      color:var(--cafe);
+    }
+    .descripcion{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:3px;
+      max-width:320px;
     }
 
     .subcat-pill{
@@ -208,6 +353,7 @@
       display:flex;
       gap:8px;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
     .btn-small{
@@ -224,15 +370,23 @@
       box-shadow:0 8px 18px rgba(201,75,75,.45);
     }
 
-    .icon{
+    /* ===== VACÍO ===== */
+    .empty{
+      text-align:center;
+      padding:26px 16px;
       font-size:14px;
+      color:var(--muted);
     }
 
-    /* Responsivo */
+    /* ===== RESPONSIVO ===== */
     @media (max-width:900px){
       .card-header{
         flex-direction:column;
         align-items:flex-start;
+      }
+      .actions-header{
+        width:100%;
+        justify-content:flex-start;
       }
     }
 
@@ -250,9 +404,10 @@
       tbody tr{
         margin-bottom:16px;
         background:#fff;
-        border-radius:16px;
+        border-radius:18px;
         padding:12px 12px 10px;
-        box-shadow:0 8px 22px rgba(0,0,0,.08);
+        box-shadow:0 12px 28px rgba(0,0,0,.14);
+        border:1px solid #f1e1d2;
       }
       td{
         border:none;
@@ -275,98 +430,127 @@
 <body>
 
 <header>
-  <h1>Panel — Gestión de Productos</h1>
-  <span>Administra los pasteles que se muestran en el catálogo de Dayane</span>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">🥐</div>
+      <div class="brand-text">
+        <h1>Gestión de Productos</h1>
+        <span>Administra los pasteles visibles en el catálogo de Dayane</span>
+      </div>
+    </div>
+
+    <div class="header-badge">
+      📦 <span>Productos registrados:</span>
+      <strong>{{ $productos->count() }}</strong>
+    </div>
+  </div>
 </header>
 
 <div class="wrapper">
   <div class="card">
+    <div class="card-inner">
 
-    <div class="card-header">
-      <div class="title-block">
-        <div class="title-icon">🍰</div>
-        <div>
-          <h2>Listado de Productos</h2>
-          <p>Desde aquí puedes agregar, editar o eliminar productos del catálogo.</p>
+      <div class="card-header">
+        <div class="title-block">
+          <div class="title-icon">🍰</div>
+          <div>
+            <h2>Listado de Productos</h2>
+            <p>Desde aquí puedes agregar, editar o eliminar productos del catálogo.</p>
+
+            <div class="mini-stats">
+              <span class="pill">
+                🧁 <span>Catálogo activo</span>
+              </span>
+              <span class="pill">
+                🎨 <span>Organiza por subcategoría para mantener ordenado el menú.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions-header">
+          <a href="{{ route('admin.dashboard') }}" class="btn-sec">
+            ← Volver al Panel
+          </a>
+
+          <a href="{{ route('admin.productos.create') }}" class="btn">
+            <span class="icon">＋</span> Agregar Producto
+          </a>
         </div>
       </div>
 
-      <div class="actions-header">
-        <a href="{{ route('admin.dashboard') }}" class="btn-sec">
-          ← Volver al Panel
-        </a>
+      <div class="table-wrap">
+        @if($productos->isEmpty())
+          <div class="empty">
+            Aún no tienes productos registrados.  
+            Usa el botón <strong>“Agregar Producto”</strong> para crear el primero.
+          </div>
+        @else
+          <table>
+            <thead>
+              <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Subcategoría</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
 
-        <a href="{{ route('admin.productos.create') }}" class="btn">
-          <span class="icon">＋</span> Agregar Producto
-        </a>
+            <tbody>
+              @foreach($productos as $p)
+              <tr>
+                <td data-label="Imagen">
+                  @if($p->imagen)
+                    <img src="{{ asset($p->imagen) }}" alt="{{ $p->nombre }}" class="thumb">
+                  @else
+                    <div class="no-img">
+                      Sin imagen
+                    </div>
+                  @endif
+                </td>
+
+                <td data-label="Nombre">
+                  <span class="nombre">{{ $p->nombre }}</span>
+                  @if($p->descripcion)
+                    <div class="descripcion">
+                      {{ Str::limit($p->descripcion, 90) }}
+                    </div>
+                  @endif
+                </td>
+
+                <td data-label="Subcategoría">
+                  <span class="subcat-pill">
+                    <span class="subcat-dot"></span>
+                    {{ $p->subcategoria->nombre ?? '—' }}
+                  </span>
+                </td>
+
+                <td data-label="Acciones">
+                  <div class="row-actions">
+                    <a href="{{ route('admin.productos.edit', $p->id) }}" class="btn btn-small">
+                      ✏️ Editar
+                    </a>
+
+                    <form action="{{ route('admin.productos.destroy', $p->id) }}"
+                          method="POST"
+                          onsubmit="return confirm('¿Eliminar este producto?');">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-small btn-danger">
+                        🗑 Eliminar
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+
+          </table>
+        @endif
       </div>
+
     </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Subcategoría</th>
-            <th style="width:190px">Acciones</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          @foreach($productos as $p)
-          <tr>
-            <td data-label="Imagen">
-              @if($p->imagen)
-                <img src="{{ asset($p->imagen) }}" alt="{{ $p->nombre }}" class="thumb">
-              @else
-                <div style="width:70px;height:70px;border-radius:14px;border:1px dashed #d3c3b4;
-                            display:flex;align-items:center;justify-content:center;font-size:11px;color:#a08971;background:#fffdf9;">
-                  Sin imagen
-                </div>
-              @endif
-            </td>
-
-            <td data-label="Nombre">
-              <strong>{{ $p->nombre }}</strong>
-              @if($p->descripcion)
-                <div style="font-size:12px;color:#7a6757;margin-top:3px;max-width:280px;">
-                  {{ Str::limit($p->descripcion, 90) }}
-                </div>
-              @endif
-            </td>
-
-            <td data-label="Subcategoría">
-              <span class="subcat-pill">
-                <span class="subcat-dot"></span>
-                {{ $p->subcategoria->nombre ?? '—' }}
-              </span>
-            </td>
-
-            <td data-label="Acciones">
-              <div class="row-actions">
-                <a href="{{ route('admin.productos.edit', $p->id) }}" class="btn btn-small">
-                  ✏️ Editar
-                </a>
-
-                <form action="{{ route('admin.productos.destroy', $p->id) }}"
-                      method="POST"
-                      onsubmit="return confirm('¿Eliminar este producto?');">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-small btn-danger">
-                    🗑 Eliminar
-                  </button>
-                </form>
-              </div>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-
-      </table>
-    </div>
-
   </div>
 </div>
 

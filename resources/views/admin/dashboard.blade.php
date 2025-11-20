@@ -11,6 +11,7 @@
       --brand:#8b5e3c; --brand-2:#a97e5a; --accent:#d77a49;
       --line:#eadfce; --shadow:0 20px 40px rgba(139,94,60,.18);
       --radius:18px; --focus:#1f6feb;
+      --ok:#2b8a3e; --warn:#e3b04b; --danger:#c04444;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -24,7 +25,6 @@
 
     .container{max-width:1100px;margin:18px auto;padding:0 16px}
 
-    /* Motas “harina” decorativas */
     .dust, .dust::before, .dust::after{
       position:absolute; inset:0; pointer-events:none;
       background:
@@ -59,7 +59,6 @@
     .titles h1{margin:0; font-size:1.35rem; letter-spacing:.3px; font-weight:800}
     .titles .sub{opacity:.92; margin-top:2px; letter-spacing:.2px; font-size:.95rem}
 
-    /* Toggle (checkbox hack) */
     #nav-toggle{position:absolute; left:-9999px}
     .burger{
       display:inline-grid; place-items:center;
@@ -76,7 +75,6 @@
     .burger .bars::before{position:absolute; top:-7px}
     .burger .bars::after {position:absolute; top:7px}
 
-    /* Drawer */
     .overlay{
       position:fixed; inset:0; background:rgba(0,0,0,.35);
       opacity:0; visibility:hidden; transition:opacity .18s ease, visibility .18s ease; z-index:18;
@@ -118,7 +116,6 @@
       background:#d9534f; color:#fff; font-size:.8rem; line-height:1; text-align:center;
     }
 
-    /* Estado abierto */
     #nav-toggle:checked ~ .overlay{opacity:1; visibility:visible}
     #nav-toggle:checked ~ .drawer{ right:0 }
     #nav-toggle:checked + label .bars{ transform:rotate(45deg) }
@@ -126,21 +123,144 @@
     #nav-toggle:checked + label .bars::after { opacity:0 }
 
     /* Tarjetas */
-    .card{ background:var(--glass); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); }
-    .card h3{ margin:0 0 8px 0 }
-    .card .body{ padding:16px }
-    .list{ list-style:none; margin:0; padding:0 }
-    .list li{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line) }
-    .list li:last-child{ border-bottom:none }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; text-decoration:none; border:1px solid var(--line); background:#fff; color:var(--text); }
-    .btn-primary{ background:var(--brand); color:#fff; border-color:#6c442a }
-    .btn-primary:hover{ filter:brightness(.98) }
+    .card{
+      background:var(--glass);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      margin-top:16px;
+    }
+    .card-header{
+      padding:14px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#ffffffcc,#fff7f0);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .card-header h3{margin:0;font-size:1.05rem}
+    .card-body{padding:16px 18px}
 
-    /* Focus accesible */
+    .chips{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;
+    }
+    .chip{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      font-size:.9rem;
+      box-shadow:0 10px 22px rgba(0,0,0,.04);
+    }
+    .chip strong{font-size:1.05rem}
+    .chip span{color:var(--muted);font-size:.8rem}
+
+    /* Filtros */
+    .filters{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:flex-end;
+    }
+    .filters-group{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      font-size:.85rem;
+    }
+    .filters-group label{color:var(--muted)}
+    .filters-group input,
+    .filters-group select{
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      min-width:160px;
+      font-size:.85rem;
+    }
+    .filter-chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .btn-chip{
+      border-radius:999px;
+      border:1px solid #e1d4c3;
+      background:#fff;
+      padding:6px 10px;
+      font-size:.8rem;
+      cursor:pointer;
+    }
+    .btn-chip.active{
+      background:var(--brand);
+      color:#fff;
+      border-color:#6c442a;
+    }
+    .btn-submit{
+      border:none;
+      border-radius:10px;
+      padding:8px 14px;
+      background:var(--brand);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      font-size:.9rem;
+      box-shadow:0 8px 18px rgba(139,94,60,.35);
+    }
+
+    /* Tabla */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.88rem;
+    }
+    th,td{
+      padding:8px 10px;
+      border-bottom:1px solid #f0e2d5;
+      text-align:left;
+    }
+    th{
+      background:#fff7f1;
+      color:#4a2f1f;
+    }
+    tr:nth-child(even){background:#faf7f4}
+    .estado-badge{
+      display:inline-block;
+      padding:3px 8px;
+      border-radius:999px;
+      font-size:.8rem;
+      color:#fff;
+    }
+    .estado-pendiente{background:var(--warn);}
+    .estado-cotizado{background:var(--ok);}
+    .estado-otro{background:var(--accent);}
+    .link-btn{
+      display:inline-flex;
+      padding:6px 10px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:.8rem;
+      text-decoration:none;
+      color:var(--brand);
+    }
+
     a,button{ outline:none }
     a:focus-visible, button:focus-visible{
       box-shadow:0 0 0 3px #fff, 0 0 0 6px var(--focus) !important;
       border-radius:12px;
+    }
+
+    @media (max-width:720px){
+      .card-header{align-items:flex-start}
+      table{font-size:.8rem}
+      th,td{padding:6px}
     }
   </style>
 </head>
@@ -167,7 +287,9 @@
       <div class="overlay"></div>
 
       @php
-          $pendientes = \App\Models\Cotizacion::where('estado','pendiente')->count();
+          use App\Models\Cotizacion;
+
+          $pendientesCount = Cotizacion::where('estado','pendiente')->count();
       @endphp
 
       <nav id="drawer" class="drawer" aria-label="Navegación principal">
@@ -179,22 +301,20 @@
           </div>
         </div>
         <div class="drawer-nav">
-          {{-- Nuevo botón regresar que solo cierra el menú --}}
           <label for="nav-toggle" class="close-drawer">
             <span class="emoji">⬅️</span> Regresar
           </label>
 
           <a href="{{ route('admin.productos.index') }}"><span class="emoji">🥐</span> Gestionar productos</a>
 
-          {{-- Enlace a cotizaciones con badge de pendientes --}}
           <a href="{{ route('admin.cotizaciones.index') }}">
             <span class="emoji">💬</span> Cotizaciones
-            @if($pendientes > 0)
-              <span class="badge" title="Pendientes">{{ $pendientes }}</span>
+            @if($pendientesCount > 0)
+              <span class="badge" title="Pendientes">{{ $pendientesCount }}</span>
             @endif
           </a>
 
-          <a href="{{ route('empleado.panel') }}"><span class="emoji">👩‍🍳</span> Ver Panel Empleado</a>
+          <a href="{{ route('empleado.pedidos.index') }}"><span class="emoji">👩‍🍳</span> Ver Panel Empleado</a>
           <a href="{{ route('admin.clientes.seleccionar') }}"><span class="emoji">🛍️</span> Ver Página Cliente</a>
 
           <form action="{{ route('logout') }}" method="POST">
@@ -206,40 +326,190 @@
     </div>
   </header>
 
+  @php
+      use Illuminate\Support\Facades\Request;
+
+      $estado   = request('estado');
+      $desde    = request('desde');
+      $hasta    = request('hasta');
+
+      // Query base
+      $q = Cotizacion::with(['cliente','producto','pedido'])
+          ->orderByDesc('created_at');
+
+      if ($estado === 'pendiente' || $estado === 'cotizado') {
+          $q->where('estado', $estado);
+      } elseif ($estado === 'con_pedido') {
+          $q->whereNotNull('precio')->whereHas('pedido');
+      }
+
+      if ($desde) {
+          $q->whereDate('created_at', '>=', $desde);
+      }
+      if ($hasta) {
+          $q->whereDate('created_at', '<=', $hasta);
+      }
+
+      $cotizaciones = $q->take(40)->get();
+
+      // Métricas rápidas
+      $total        = Cotizacion::count();
+      $totalPend    = Cotizacion::where('estado','pendiente')->count();
+      $totalCoti    = Cotizacion::where('estado','cotizado')->count();
+      $totalPedido  = Cotizacion::whereNotNull('precio')->whereHas('pedido')->count();
+      $hoy          = Cotizacion::whereDate('created_at', now()->toDateString())->count();
+  @endphp
+
   <main class="container">
-    {{-- Widget: Nuevas cotizaciones --}}
-    @php
-        $nuevas = \App\Models\Cotizacion::with(['cliente','producto'])
-            ->where('estado','pendiente')
-            ->latest()->take(6)->get();
-    @endphp
 
-    <section class="card" aria-labelledby="cotis-title" style="margin-top:16px;">
-      <div class="body">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-          <h3 id="cotis-title">Nuevas cotizaciones</h3>
-          <a class="btn" href="{{ route('admin.cotizaciones.index') }}">Ver todas</a>
+    {{-- Tarjetas de resumen --}}
+    <section class="card" aria-label="Resumen de cotizaciones">
+      <div class="card-header">
+        <h3>Resumen rápido</h3>
+        <span style="font-size:.85rem;color:var(--muted)">Vista general de todas las cotizaciones</span>
+      </div>
+      <div class="card-body">
+        <div class="chips">
+          <div class="chip">
+            <strong>{{ $total }}</strong>
+            <span>Total de cotizaciones</span>
+          </div>
+          <div class="chip">
+            <strong>{{ $totalPend }}</strong>
+            <span>Pendientes</span>
+          </div>
+          <div class="chip">
+            <strong>{{ $totalCoti }}</strong>
+            <span>Cotizadas</span>
+          </div>
+          <div class="chip">
+            <strong>{{ $totalPedido }}</strong>
+            <span>Con pedido generado</span>
+          </div>
+          <div class="chip">
+            <strong>{{ $hoy }}</strong>
+            <span>Registradas hoy</span>
+          </div>
         </div>
-
-        @if($nuevas->isEmpty())
-          <p style="margin:12px 0 0;color:var(--muted)">No hay cotizaciones pendientes.</p>
-        @else
-          <ul class="list" style="margin-top:8px">
-            @foreach($nuevas as $c)
-              <li>
-                <div>
-                  <div><strong>{{ $c->producto->nombre ?? '—' }}</strong></div>
-                  <small style="color:var(--muted)">
-                    {{ $c->cliente->name ?? 'Cliente' }} • {{ $c->created_at->diffForHumans() }}
-                  </small>
-                </div>
-                <a class="btn btn-primary" href="{{ route('admin.cotizaciones.show', $c) }}">Revisar</a>
-              </li>
-            @endforeach
-          </ul>
-        @endif
       </div>
     </section>
+
+    {{-- Explorador con filtros --}}
+    <section class="card" aria-label="Explorar cotizaciones">
+      <div class="card-header">
+        <h3>Explorar cotizaciones</h3>
+        <span style="font-size:.85rem;color:var(--muted)">
+          Filtra por estado y fechas para revisar más rápido.
+        </span>
+      </div>
+      <div class="card-body">
+
+        {{-- Filtros --}}
+        <form method="GET" action="{{ route('admin.dashboard') }}" class="filters">
+          <div class="filters-group" style="flex:1 1 220px;">
+            <label>Estado</label>
+            <div class="filter-chips">
+              @php
+                $estadoActual = $estado ?? '';
+              @endphp
+              <button type="submit" name="estado" value=""
+                      class="btn-chip {{ $estadoActual === '' ? 'active' : '' }}">
+                Todas
+              </button>
+              <button type="submit" name="estado" value="pendiente"
+                      class="btn-chip {{ $estadoActual === 'pendiente' ? 'active' : '' }}">
+                Pendientes
+              </button>
+              <button type="submit" name="estado" value="cotizado"
+                      class="btn-chip {{ $estadoActual === 'cotizado' ? 'active' : '' }}">
+                Cotizadas
+              </button>
+              <button type="submit" name="estado" value="con_pedido"
+                      class="btn-chip {{ $estadoActual === 'con_pedido' ? 'active' : '' }}">
+                Con pedido
+              </button>
+            </div>
+          </div>
+
+          <div class="filters-group">
+            <label for="desde">Desde</label>
+            <input type="date" id="desde" name="desde" value="{{ $desde }}">
+          </div>
+
+          <div class="filters-group">
+            <label for="hasta">Hasta</label>
+            <input type="date" id="hasta" name="hasta" value="{{ $hasta }}">
+          </div>
+
+          <div class="filters-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn-submit">
+              Aplicar filtros
+            </button>
+          </div>
+        </form>
+
+        {{-- Tabla --}}
+        <div style="margin-top:14px;overflow-x:auto;">
+          @if($cotizaciones->isEmpty())
+            <p style="color:var(--muted);font-size:.9rem;">No se encontraron cotizaciones con esos filtros.</p>
+          @else
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Producto</th>
+                  <th>Estado</th>
+                  <th>Precio</th>
+                  <th>Pedido</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($cotizaciones as $c)
+                  @php
+                    $estadoClass = 'estado-otro';
+                    if($c->estado === 'pendiente') $estadoClass = 'estado-pendiente';
+                    if($c->estado === 'cotizado')  $estadoClass = 'estado-cotizado';
+                  @endphp
+                  <tr>
+                    <td>{{ optional($c->created_at)->format('d/m/Y H:i') }}</td>
+                    <td>{{ $c->cliente->name ?? '—' }}</td>
+                    <td>{{ $c->producto->nombre ?? '—' }}</td>
+                    <td>
+                      <span class="estado-badge {{ $estadoClass }}">
+                        {{ ucfirst($c->estado ?? '—') }}
+                      </span>
+                    </td>
+                    <td>
+                      @if(!is_null($c->precio))
+                        ${{ number_format($c->precio,2) }}
+                      @else
+                        —
+                      @endif
+                    </td>
+                    <td>
+                      @if($c->pedido)
+                        #{{ $c->pedido->id }} ({{ ucfirst($c->pedido->estado) }})
+                      @else
+                        —
+                      @endif
+                    </td>
+                    <td>
+                      <a href="{{ route('admin.cotizaciones.show', $c) }}" class="link-btn">
+                        Ver / responder
+                      </a>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          @endif
+        </div>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>

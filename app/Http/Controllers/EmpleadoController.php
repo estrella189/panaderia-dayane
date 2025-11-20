@@ -20,11 +20,21 @@ class EmpleadoController extends Controller
             abort(403, 'No tienes permiso.');
         }
 
-        $estado = $request->query('estado');
+        $estado = $request->query('estado'); // puede venir null o 'todos'
 
-        // Cliente (users) + Cotización con su Producto
         $pedidos = Pedido::with(['cliente', 'cotizacion.producto'])
-            ->when($estado, fn($q) => $q->where('estado', $estado))
+            // 👑 ADMIN: solo entregados o cancelados
+            ->when($u->role === 'admin', function ($q) {
+                $q->whereIn('estado', ['entregado', 'cancelado']);
+            })
+            // 👨‍🍳 EMPLEADO: no se limita, puede ver todos
+            ->when($u->role === 'empleado', function ($q) {
+                // aquí no aplicamos filtro extra
+            })
+            // filtro por estado desde los chips (si no es "todos")
+            ->when($estado && $estado !== 'todos', function ($q) use ($estado) {
+                $q->where('estado', $estado);
+            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -33,7 +43,7 @@ class EmpleadoController extends Controller
     }
 
     /**
-     * LISTA COMPLETA DE PEDIDOS
+     * LISTA COMPLETA DE PEDIDOS (vista "Todos los pedidos")
      */
     public function pedidosIndex(Request $request)
     {
@@ -43,10 +53,21 @@ class EmpleadoController extends Controller
             abort(403, 'No tienes permiso para acceder.');
         }
 
-        $estado = $request->get('estado');
+        $estado = $request->get('estado'); // puede venir null o 'todos'
 
         $pedidos = Pedido::with(['cliente', 'cotizacion.producto'])
-            ->when($estado, fn($q) => $q->where('estado', $estado))
+            // 👑 ADMIN: solo entregados o cancelados
+            ->when($user->role === 'admin', function ($q) {
+                $q->whereIn('estado', ['entregado', 'cancelado']);
+            })
+            // 👨‍🍳 EMPLEADO: ve todos
+            ->when($user->role === 'empleado', function ($q) {
+                // sin filtro extra
+            })
+            // filtro por estado si viene desde la URL
+            ->when($estado && $estado !== 'todos', function ($q) use ($estado) {
+                $q->where('estado', $estado);
+            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -63,6 +84,14 @@ class EmpleadoController extends Controller
 
         if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
             abort(403, 'No tienes permiso.');
+        }
+
+        // 👑 ADMIN: solo puede ver pedidos entregados o cancelados
+        if (
+            $user->role === 'admin'
+            && !in_array($pedido->estado, ['entregado', 'cancelado'])
+        ) {
+            abort(403, 'Los administradores solo pueden ver pedidos finalizados.');
         }
 
         // Carga relaciones si no están ya cargadas (incluye producto)

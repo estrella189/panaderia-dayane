@@ -27,6 +27,12 @@
 <body>
   <header>Cotizaciones — Panadería y Pastelería Dayane</header>
   <div class="container">
+
+ 
+    <a href="{{ route('admin.dashboard') }}" class="btn" style="margin-bottom:14px;display:inline-block;">
+      ← Regresar al inicio
+    </a>
+
     <h2 style="margin:12px 0 14px 0;">Cotizaciones</h2>
 
     @if(session('ok'))    <div class="alert alert-success">{{ session('ok') }}</div> @endif
@@ -53,7 +59,9 @@
                 <td>{{ $c->cliente->name ?? '—' }}</td>
                 <td>{{ $c->producto->nombre ?? '—' }}</td>
                 <td>
-                  <span class="badge bg-{{ $c->estado === 'pendiente' ? 'warning' : 'primary' }}">{{ ucfirst($c->estado) }}</span>
+                  <span class="badge bg-{{ $c->estado === 'pendiente' ? 'warning' : 'primary' }}">
+                    {{ ucfirst($c->estado) }}
+                  </span>
                 </td>
                 <td>
                   @if($c->estado === 'cotizado' && !is_null($c->precio))
@@ -72,7 +80,10 @@
             </tbody>
           </table>
 
+        </div>
+      </div>
     </div>
+
   </div>
 </body>
 </html>
