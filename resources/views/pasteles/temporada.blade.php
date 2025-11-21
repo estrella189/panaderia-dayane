@@ -9,9 +9,47 @@
     :root{ --cafe-oscuro:#8b5e3c; --cafe-medio:#a97e5a; --texto:#333; --bg:#f5f5f5; --sombra:0 8px 24px rgba(0,0,0,.12); --sombra-hover:0 14px 30px rgba(0,0,0,.16); --radius-xl:24px; }
     *{box-sizing:border-box}
     body{ margin:0; font-family:'Trebuchet MS','Lucida Sans Unicode','Lucida Grande','Lucida Sans',Arial,sans-serif; background:#f9f6f3; color:var(--texto); }
-    header{ background:linear-gradient(135deg, #956644, #7b5436); color:#fff; padding:28px 18px; display:flex; justify-content:center; align-items:center; text-align:center; box-shadow:var(--sombra); }
-    header h1{ margin:0; font-size:clamp(22px, 3.2vw, 36px); display:flex; align-items:center; gap:12px; font-weight:700; }
+
+    header{
+      background:linear-gradient(135deg, #956644, #7b5436);
+      color:#fff;
+      padding:28px 18px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      box-shadow:var(--sombra);
+      position:relative;
+    }
+
+    header h1{
+      margin:0;
+      font-size:clamp(22px, 3.2vw, 36px);
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:700;
+    }
+
+    /* 🔙 Botón regresar */
+    .btn-back{
+      background:#ffffff22;
+      border:1px solid #ffffff44;
+      padding:8px 14px;
+      border-radius:12px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      position:absolute;
+      left:18px;
+      top:20px;
+    }
+    .btn-back:hover{
+      background:#ffffff33;
+    }
+
     main{ max-width:1100px; margin:28px auto 60px; padding:0 16px; }
+
     .flash{ max-width:1100px;margin:10px auto 0; padding:10px 14px; border-radius:12px; }
     .flash.ok{ background:#e7f7ee; color:#1f7a43; border:1px solid #b9e6cb; }
     .flash.error{ background:#fdeaea; color:#a12b2b; border:1px solid #f3c2c2; }
@@ -50,8 +88,10 @@
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Pasteles de Temporada - Dayane </h1>
+    <a href="{{ route('cliente.inicio') }}" class="btn-back">⬅️ Volver al inicio</a>
+    <h1>Pasteles de Temporada - Dayane</h1>
   </header>
   
   {{-- Mensajes flash --}}
@@ -68,6 +108,7 @@
     @endif
 
     <section class="products">
+
       @foreach($productos as $producto)
       <article class="product-card">
        
@@ -78,16 +119,21 @@
           @auth
           <form method="POST" action="{{ route('cotizaciones.store') }}" style="display:grid;gap:8px">
             @csrf
+
             <input type="hidden" name="producto_nombre" value="{{ $producto->nombre }}">
+
             <label>Cantidad
               <input class="input" type="number" name="cantidad" min="1" value="1" required>
             </label>
+
             <label>Fecha de entrega
               <input class="input" type="date" name="fecha_entrega">
             </label>
+
             <label>Mensaje (opcional)
               <input class="input" type="text" name="mensaje_pastel" maxlength="255">
             </label>
+
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
               <label>Tamaño
                 <select class="select" name="tamano">
@@ -97,6 +143,7 @@
                   <option>Grande</option>
                 </select>
               </label>
+
               <label>Sabor
                 <select class="select" name="sabor">
                   <option value="">—</option>
@@ -106,17 +153,23 @@
                 </select>
               </label>
             </div>
+
             <button class="btn" type="submit">Pedir cotización</button>
+
           </form>
+
           @else
             <a href="{{ route('login') }}" class="btn" style="display:inline-block;text-decoration:none;text-align:center">
               Inicia sesión para cotizar
             </a>
           @endauth
+
         </div>
       </article>
       @endforeach
+
     </section>
   </main>
+
 </body>
 </html>
