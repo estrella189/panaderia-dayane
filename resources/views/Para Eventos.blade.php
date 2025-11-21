@@ -228,11 +228,12 @@ header h1 {
       <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felicidadesian.jpg') }}" alt=""></article>
       <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felizcumplerosasazulles.jpg') }}" alt=""></article>
       <article class="product-card"><img src="{{ asset('img/pasteles/eventos/felizcumple.jpg') }}" alt=""></article>
-      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pastel_de_pony.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pastel de pony.jpg') }}" alt=""></article>
       <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pstelbely.jpg') }}" alt=""></article>
-      <article class="product-card"><img src="quequitos colores.jpg" alt=""></article>
-      <article class="product-card"><img src="pastelfrozen.jpg" alt=""></article>
-      <article class="product-card"><img src="pastelmasha_oso.jpg" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/quequitos colores.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pastelfrozen.jpg') }}" alt=""></article>
+      <article class="product-card"><img src="{{ asset('img/pasteles/eventos/pastelmasha_oso.jpg') }}" alt=""></article>
+     
     </section>
 
       <div style="text-align:center;">
