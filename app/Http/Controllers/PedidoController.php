@@ -90,9 +90,6 @@ class PedidoController extends Controller
         });
     }
 
-    /**
-     * Método genérico para pedidos con producto_id
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -124,4 +121,5 @@ class PedidoController extends Controller
                 ->with('ok', '¡Tu pedido fue registrado exitosamente! #'.$pedido->id);
         });
     }
+    
 }

@@ -5,126 +5,118 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pedido;
+use App\Models\User;
 
 class EmpleadoController extends Controller
 {
     /**
-     * PANEL PRINCIPAL DEL EMPLEADO
+     * PANEL DEL EMPLEADO
      */
     public function panel(Request $request)
     {
         $u = Auth::user();
 
-        // Solo empleado o admin pueden entrar
         if (!$u || !in_array($u->role, ['empleado', 'admin'])) {
-            abort(403, 'No tienes permiso.');
+            abort(403);
         }
 
-        $estado = $request->query('estado'); // puede venir null o 'todos'
+        $estado = $request->query('estado');
 
-        $pedidos = Pedido::with(['cliente', 'cotizacion.producto'])
-            // 👑 ADMIN: solo entregados o cancelados
-            ->when($u->role === 'admin', function ($q) {
-                $q->whereIn('estado', ['entregado', 'cancelado']);
-            })
-            // 👨‍🍳 EMPLEADO: no se limita, puede ver todos
-            ->when($u->role === 'empleado', function ($q) {
-                // aquí no aplicamos filtro extra
-            })
-            // filtro por estado desde los chips (si no es "todos")
-            ->when($estado && $estado !== 'todos', function ($q) use ($estado) {
-                $q->where('estado', $estado);
-            })
+        $pedidos = Pedido::with(['cliente','cotizacion.producto'])
+            ->when($u->role === 'admin', fn($q) =>
+                $q->whereIn('estado',['entregado','cancelado'])
+            )
+            ->when($estado && $estado !== 'todos', fn($q) =>
+                $q->where('estado',$estado)
+            )
             ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10);
 
-        return view('empleado.panel', compact('pedidos', 'estado'));
+        return view('empleado.panel', compact('pedidos','estado'));
     }
 
+
     /**
-     * LISTA COMPLETA DE PEDIDOS (vista "Todos los pedidos")
+     * LISTADO GENERAL (admin ve filtro por empleado)
      */
     public function pedidosIndex(Request $request)
     {
         $user = Auth::user();
 
-        if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
-            abort(403, 'No tienes permiso para acceder.');
+        if (!$user || !in_array($user->role,['empleado','admin'])) {
+            abort(403);
         }
 
-        $estado = $request->get('estado'); // puede venir null o 'todos'
+        $estado     = $request->get('estado');
+        $empleadoId = $request->get('empleado_id');
 
-        $pedidos = Pedido::with(['cliente', 'cotizacion.producto'])
-            // 👑 ADMIN: solo entregados o cancelados
-            ->when($user->role === 'admin', function ($q) {
-                $q->whereIn('estado', ['entregado', 'cancelado']);
-            })
-            // 👨‍🍳 EMPLEADO: ve todos
-            ->when($user->role === 'empleado', function ($q) {
-                // sin filtro extra
-            })
-            // filtro por estado si viene desde la URL
-            ->when($estado && $estado !== 'todos', function ($q) use ($estado) {
-                $q->where('estado', $estado);
-            })
+        $empleados = $user->role === 'admin'
+            ? User::where('role','empleado')->orderBy('name')->get()
+            : collect();
+
+        $pedidos = Pedido::with(['cliente','cotizacion.producto','empleado'])
+            ->when($user->role === 'admin', fn($q) =>
+                $q->whereIn('estado',['entregado','cancelado'])
+            )
+            ->when($estado && $estado !== 'todos', fn($q) =>
+                $q->where('estado',$estado)
+            )
+            ->when($user->role === 'admin' && $empleadoId, fn($q) =>
+                $q->where('id_empleado',$empleadoId)
+            )
             ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10);
 
-        return view('empleado.pedidos.index', compact('pedidos', 'estado'));
+        return view('empleado.pedidos.index', compact(
+            'pedidos','estado','empleados','empleadoId'
+        ));
     }
 
+
     /**
-     * VER DETALLE DE UN PEDIDO
+     * DETALLE
      */
     public function pedidosShow(Pedido $pedido)
     {
         $user = Auth::user();
 
-        if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
-            abort(403, 'No tienes permiso.');
+        if (!$user || !in_array($user->role,['empleado','admin'])) {
+            abort(403);
         }
 
-        // 👑 ADMIN: solo puede ver pedidos entregados o cancelados
-        if (
-            $user->role === 'admin'
-            && !in_array($pedido->estado, ['entregado', 'cancelado'])
-        ) {
-            abort(403, 'Los administradores solo pueden ver pedidos finalizados.');
+        if ($user->role === 'admin' && !in_array($pedido->estado,['entregado','cancelado'])) {
+            abort(403);
         }
 
-        // Carga relaciones si no están ya cargadas (incluye producto)
-        $pedido->loadMissing(['cliente', 'cotizacion.producto']);
+        $pedido->loadMissing(['cliente','cotizacion.producto','empleado']);
 
         return view('empleado.pedidos.show', compact('pedido'));
     }
 
+
     /**
-     * ACTUALIZAR ESTADO (Entregado / Cancelado)
+     * ACTUALIZAR ESTADO
      */
     public function pedidosUpdateEstado(Request $request, Pedido $pedido)
     {
         $user = Auth::user();
 
-        if (!$user || !in_array($user->role, ['empleado', 'admin'])) {
-            abort(403, 'No tienes permiso.');
+        if (!$user || !in_array($user->role,['empleado','admin'])) {
+            abort(403);
         }
 
-        // Validar el estado que llega
         $data = $request->validate([
             'estado' => 'required|in:entregado,cancelado',
         ]);
 
-        // Evitar modificar pedidos cerrados
-        if (in_array($pedido->estado, ['entregado', 'cancelado'])) {
-            return back()->with('error', 'Este pedido ya está cerrado.');
+        if (in_array($pedido->estado,['entregado','cancelado'])) {
+            return back()->with('error','Este pedido ya está cerrado.');
         }
 
-        // Actualizar el estado del pedido
-        $pedido->estado = $data['estado'];
+        $pedido->estado      = $data['estado'];
+        $pedido->id_empleado = $user->id; // 👈 AQUI GUARDAMOS QUIEN LO MARCÓ
         $pedido->save();
 
-        return back()->with('ok', 'Pedido marcado como: ' . ucfirst($data['estado']));
+        return back()->with('ok','Pedido marcado como: '.ucfirst($data['estado']));
     }
 }

@@ -15,6 +15,11 @@ class Pedido extends Model
     ];
 
     // Relación con users
+    public function empleado()
+{
+    return $this->belongsTo(User::class, 'id_empleado');
+}
+
     public function cliente()
     {
         return $this->belongsTo(\App\Models\User::class, 'id_cliente', 'id')

@@ -82,6 +82,33 @@
       max-width:420px; display:block; color:var(--brand); font-weight:600;
     }
 
+    /* SELECT EMPLEADO */
+    .select-emp{
+      margin:15px 0;
+      display:flex; align-items:center; gap:10px;
+      background:#fff7e8;
+      border:1px solid #f1d6b7;
+      padding:12px;
+      border-radius:12px;
+    }
+    .select-emp select{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid #d6b89c;
+      background:white;
+      cursor:pointer;
+      min-width:220px;
+    }
+    .msg-ayuda{
+      margin-top:8px;
+      background:#fff3d5;
+      border:1px solid #e8c690;
+      padding:10px;
+      border-radius:10px;
+      font-size:.9rem;
+      color:#6b4a2d;
+    }
+
     @media (max-width:720px){
       main{margin:20px 10px;padding:20px}
       .one-line{ max-width:180px; font-size:.9rem; }
@@ -98,7 +125,6 @@
   <header>
     <h1>📋 Todos los pedidos</h1>
 
-    {{-- ADMIN: botón para regresar --}}
     @if($esAdmin)
       <a href="{{ route('admin.dashboard') }}" class="back-btn">⬅️ Volver al panel admin</a>
     @endif
@@ -122,13 +148,36 @@
   <main>
     <h2 style="margin-top:0;">Listado de pedidos</h2>
 
+    {{-- ⚡ MENSAJE ADMIN --}}
     @if($esAdmin)
       <p style="background:#fff7e3;border:1px solid #f1d59a;padding:10px;border-radius:10px;">
         👑 Estás viendo como <strong>Administrador</strong>.  
-        Solo se muestran pedidos <strong>entregados</strong> o <strong>cancelados</strong>.
+        Primero selecciona un empleado para ver los pedidos que <strong>él marcó</strong> como
+        <strong>entregados</strong> o <strong>cancelados</strong>.
       </p>
+
+      {{-- 🔽 SELECT DE EMPLEADO --}}
+      <form method="GET" action="{{ route('empleado.pedidos.index') }}" class="select-emp">
+        <label><strong>Empleado:</strong></label>
+
+        <select name="empleado_id" onchange="this.form.submit()">
+          <option value="">— Selecciona un empleado —</option>
+
+          @foreach($empleados ?? [] as $emp)
+            <option value="{{ $emp->id }}" {{ (isset($empleadoId) && $empleadoId == $emp->id) ? 'selected' : '' }}>
+              {{ $emp->name }}
+            </option>
+          @endforeach
+        </select>
+      </form>
+
+      {{-- Si no ha seleccionado alguno --}}
+      @if(empty($empleadoId))
+        <p class="msg-ayuda">Selecciona un empleado para mostrar sus pedidos.</p>
+      @endif
     @endif
 
+    {{-- TABLA --}}
     @if(($pedidos ?? collect())->count() > 0)
       <table>
         <thead>
@@ -153,12 +202,11 @@
               <td><span class="badge {{ $p->estado }}">{{ ucfirst($p->estado) }}</span></td>
               <td>{{ optional($p->created_at)->format('d/m/Y H:i') }}</td>
               <td>
-              @unless($esAdmin)
-                <a href="{{ route('empleado.pedidos.show', $p) }}" class="btn-sm btn-view">
-                  🔍 Ver
-                </a>
-              @endunless
-
+                @unless($esAdmin)
+                  <a href="{{ route('empleado.pedidos.show', $p) }}" class="btn-sm btn-view">
+                    🔍 Ver
+                  </a>
+                @endunless
               </td>
             </tr>
           @endforeach
@@ -176,3 +224,4 @@
 
 </body>
 </html>
+

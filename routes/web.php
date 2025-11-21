@@ -267,3 +267,7 @@ Route::middleware('auth')->prefix('cliente')->group(function () {
     Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])
         ->name('cliente.pedidos.show');
 });
+Route::get('/admin/pedidos/por-empleado', 
+    [EmpleadoController::class, 'pedidosIndex']
+)->middleware('auth')->name('admin.pedidos.porEmpleado');
+
