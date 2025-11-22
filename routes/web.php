@@ -274,3 +274,26 @@ Route::get('/admin/pedidos/por-empleado',
     [EmpleadoController::class, 'pedidosIndex']
 )->middleware('auth')->name('admin.pedidos.porEmpleado');
 
+// Mostrar formulario de restaurar contraseña
+Route::get('/restablecer', function () {
+    return view('auth.reset-simple');
+})->name('password.request');
+
+// Guardar nueva contraseña
+Route::post('/restablecer', function (Illuminate\Http\Request $request) {
+    $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'confirmed', 'min:6']
+    ]);
+
+    $user = \App\Models\User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return back()->withErrors(['email' => 'No existe un usuario con ese correo.']);
+    }
+
+    $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+    $user->save();
+
+    return redirect()->route('login.form')->with('status', 'Contraseña actualizada correctamente.');
+})->name('password.update');

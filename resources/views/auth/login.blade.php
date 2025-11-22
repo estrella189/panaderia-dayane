@@ -87,6 +87,25 @@
             color: #5c3a21;
         }
 
+        /* Estilo para el enlace de recuperar contraseña */
+        .forgot-link {
+            display: block;
+            margin-top: 1rem;
+            text-align: right;
+        }
+
+        .forgot-link a {
+            color: #8b6b3d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .forgot-link a:hover {
+            color: #5c3a21;
+            text-decoration: underline;
+        }
+
         @media (max-width: 480px) {
             .login-container {
                 padding: 1.5rem;
@@ -108,9 +127,14 @@
                 <label for="password">Contraseña</label>
                 <input type="password" name="password" placeholder="Ingrese su contraseña" required>
             </div>
+
             <button type="submit">Iniciar sesión</button>
+
+           
+            <div class="forgot-link">
+                <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+            </div>
         </form>
     </div>
 </body>
 </html>
-
