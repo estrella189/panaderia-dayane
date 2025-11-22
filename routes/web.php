@@ -77,6 +77,9 @@ Route::get('/otros.html', fn() => redirect('/otros'));
 Route::get('/contacto', fn() => view('contacto'))->name('contacto');
 Route::get('/contacto.html', fn() => redirect('/contacto'));
 
+Route::get('/Términos y Condiciones', fn() => view('Términos y Condiciones'))->name('Términos y Condiciones');
+Route::get('/Términos y Condiciones.html', fn() => redirect('/Términos y Condiciones'));    
+
 
 Route::get('/admin/dashboard', function () {
     abort_unless(Auth::check() && Auth::user()?->role === 'admin', 403);
