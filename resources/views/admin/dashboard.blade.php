@@ -277,7 +277,7 @@
         </div>
       </div>
 
-      {{-- Toggle + botón hamburguesa --}}
+
       <input type="checkbox" id="nav-toggle" aria-hidden="true">
       <label for="nav-toggle" class="burger" aria-label="Abrir menú" aria-controls="drawer" aria-expanded="false">
         <span class="bars"></span>
