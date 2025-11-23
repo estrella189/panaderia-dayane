@@ -29,7 +29,7 @@ class Pedido extends Model
     public function cotizacion()
 {
     return $this->belongsTo(\App\Models\Cotizacion::class, 'id_cotizacion', 'id')
-        ->withDefault(['detalles' => '—']); // 👈 usa detalles
+        ->withDefault(['detalles' => '—']); // usa detalles
 }
 
 }
