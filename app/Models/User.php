@@ -38,7 +38,7 @@ class User extends Authenticatable
         return $this->hasMany(pedido::class, 'id_cliente');
     }
 
-    // Un admin o empleado puede responder cotizaciones
+    // Un admin  puede responder cotizaciones
     public function respuestasCotizacion()
     {
         return $this->hasMany(RespuestaCotizacion::class, 'admin_id');
