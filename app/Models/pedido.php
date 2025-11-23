@@ -11,7 +11,7 @@ class Pedido extends Model
         'id_cliente',
         'id_cotizacion',
         'estado',
-        // agrega los demás campos que tengas
+    
     ];
 
     // Relación con users
