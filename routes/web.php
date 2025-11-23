@@ -26,12 +26,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login.form');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/admin/dashboard', function () {
-    /** @var \App\Models\User|null $u */
-    $u = Auth::user();
-    abort_unless($u && $u->isAdmin(), 403);
-    return view('admin.dashboard');
-})->name('admin.dashboard');
 
 Route::get('/empleado/panel', function () {
     /** @var \App\Models\User|null $u */
@@ -46,7 +40,6 @@ Route::get('/cliente/inicio', function () {
     abort_unless($u && $u->isCliente(), 403);
     return view('cliente.inicio');
 })->name('cliente.inicio');
-
 
 
 
@@ -81,10 +74,6 @@ Route::get('/Términos y Condiciones', fn() => view('Términos y Condiciones'))-
 Route::get('/Términos y Condiciones.html', fn() => redirect('/Términos y Condiciones'));    
 
 
-Route::get('/admin/dashboard', function () {
-    abort_unless(Auth::check() && Auth::user()?->role === 'admin', 403);
-    return view('admin.dashboard');
-})->name('admin.dashboard');
 
 
 Route::get('/Rollos y Variedades', fn() => view('Rollos y Variedades'))->name('Rollos y Variedades');
@@ -126,9 +115,6 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/mis-pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
 });
 
-// Catálogos por categoría
-Route::get('/pasteles/{categoria}', [ProductoController::class, 'index'])
-     ->name('productos.publico');
 
 // Mis pedidos del cliente
 Route::middleware('auth')->group(function () {
@@ -177,7 +163,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cotizaciones', [CotizacionController::class, 'store'])
         ->name('cotizaciones.store');
 
-    // (opcional) ver mis cotizaciones
+    // CLIENTE: ver mis cotizaciones
     Route::get('/mis-cotizaciones', [CotizacionController::class, 'misCotizaciones'])
         ->name('cotizaciones.mias');
 });
