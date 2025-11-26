@@ -131,7 +131,7 @@
             </label>
 
             <label>Fecha de entrega
-              <input class="input" type="date" name="fecha_entrega">
+              <input class="input" type="date" name="fecha_entrega" min="{{ \Carbon\Carbon::today()->toDateString() }}">
             </label>
 
             <label>Mensaje (opcional)

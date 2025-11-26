@@ -75,6 +75,32 @@
             box-shadow: 0 4px 12px rgba(139, 107, 61, 0.3);
         }
 
+    
+        .btn-register {
+            display: block;             
+            box-sizing: border-box;      
+            width: 100%;                 
+            text-align: center;
+            background-color: #a1641ab8;
+            padding: 0.75rem 1.5rem;
+            margin-top: 0.5rem;
+            border-radius: 6px;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-register:hover {
+            background-color: #7a5c3a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 107, 61, 0.3);
+        }
+
         .form-group {
             margin-bottom: 1.25rem;
             text-align: left;
@@ -87,7 +113,6 @@
             color: #5c3a21;
         }
 
-        /* Estilo para el enlace de recuperar contraseña */
         .forgot-link {
             display: block;
             margin-top: 1rem;
@@ -117,12 +142,15 @@
 <body>
     <div class="login-container">
         <h2>Inicio de Sesión</h2>
+
         <form action="{{ route('login') }}" method="POST">
             @csrf
+
             <div class="form-group">
                 <label for="email">Correo electrónico</label>
                 <input type="email" name="email" placeholder="Ingrese su correo" required>
             </div>
+
             <div class="form-group">
                 <label for="password">Contraseña</label>
                 <input type="password" name="password" placeholder="Ingrese su contraseña" required>
@@ -130,10 +158,13 @@
 
             <button type="submit">Iniciar sesión</button>
 
-           
+        
+            <a class="btn-register" href="{{ route('register') }}">Registrarse</a>
+
             <div class="forgot-link">
                 <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
             </div>
+
         </form>
     </div>
 </body>

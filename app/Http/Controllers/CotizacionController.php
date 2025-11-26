@@ -16,16 +16,19 @@ class CotizacionController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'producto_id'     => ['nullable','integer','exists:productos,id'],
-            'producto_nombre' => ['nullable','string','max:150'],
-            'cantidad'        => ['nullable','integer','min:1'], // la metemos en detalles si viene
-            'fecha_entrega'   => ['nullable','date'],
-            'mensaje_pastel'  => ['nullable','string','max:255'],
-            'tamano'          => ['nullable','string','max:50'],
-            'sabor'           => ['nullable','string','max:50'],
-            'detalles'        => ['nullable','string','max:2000'], // por si ya mandas un solo campo
-        ]);
+      $data = $request->validate([
+    'producto_id'     => ['nullable','integer','exists:productos,id'],
+    'producto_nombre' => ['nullable','string','max:150'],
+    'cantidad'        => ['nullable','integer','min:1'],
+    'fecha_entrega' => ['required','date','after_or_equal:today'],
+    'mensaje_pastel'  => ['nullable','string','max:255'],
+    'tamano'          => ['nullable','string','max:50'],
+    'sabor'           => ['nullable','string','max:50'],
+    'detalles'        => ['nullable','string','max:2000'],
+    ], [
+        'fecha_entrega.after_or_equal' => 'La fecha de entrega debe ser hoy o una fecha futura.',
+    ]);
+
 
         // Resolver id_producto si solo mandaron nombre (útil para tu página estática de pasteles)
         $productoId = $data['producto_id'] ?? null;

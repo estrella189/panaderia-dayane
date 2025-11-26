@@ -213,9 +213,9 @@
             </label>
 
             <label>Fecha de entrega
-              <input class="input" type="date" name="fecha_entrega">
+              <input class="input" type="date" name="fecha_entrega" min="{{ \Carbon\Carbon::today()->toDateString() }}">
             </label>
-
+            
             <label>Mensaje (opcional)
               <input class="input" type="text" name="mensaje_pastel" maxlength="255">
             </label>

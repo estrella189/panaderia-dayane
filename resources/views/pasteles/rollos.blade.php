@@ -207,8 +207,8 @@
               <input class="input" type="number" name="cantidad" min="1" value="1" required>
             </label>
 
-            <label>Fecha de entrega
-              <input class="input" type="date" name="fecha_entrega">
+              <label>Fecha de entrega
+              <input class="input" type="date" name="fecha_entrega" min="{{ \Carbon\Carbon::today()->toDateString() }}">
             </label>
 
             <label>Mensaje (opcional)
