@@ -69,7 +69,6 @@ Route::get('/Términos y Condiciones.html', fn() => redirect('/Términos y Condi
 
 
 
-
 Route::get('/Rollos y Variedades', fn() => view('Rollos y Variedades'))->name('Rollos y Variedades');
 Route::get('/Rollos y Variedades.html', fn() => redirect('/Rollos y Variedades'));
 
