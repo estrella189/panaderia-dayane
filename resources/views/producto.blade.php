@@ -126,8 +126,8 @@
         <details>
           <summary>Repostería</summary>
           <div class="submenu">
-            <a href="panes_dulces.html">Pan Dulce</a>
-            <a href="panes_salados.html">Pan Salado</a>
+            <a href="{{ route('panes_dulces') }}">Panes dulces</a>
+            <a href="{{ route('panes_salados') }}">Panes salados</a>
             <a href="otros.html">Pay de queso</a>
           </div>
         </details>
@@ -146,9 +146,9 @@
         <details>
           <summary>Otros Productos</summary>
           <div class="submenu">
-            <a href="leche.html">Leche</a>
-            <a href="coca.html">Coca-Cola y Refrescos</a>
-            <a href="hidratantes.html">Hidratantes</a>
+            <a href="{{ route('leche') }}">Leche</a>
+            <a href="{{ route('coca') }}">Rrefrescos</a>
+            <a href="{{ route('hidratantes') }}">Hidratantes</a>
           </div>
         </details>
       </div>

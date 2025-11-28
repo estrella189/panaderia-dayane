@@ -62,13 +62,16 @@ class ProductoController extends Controller
             'id_subcategoria' => 'required|exists:subcategorias,id',
             'nombre'          => 'required',
             'descripcion'     => 'nullable',
-            'imagen'          => 'nullable|image'
+            'imagen'          => 'nullable|image',
+            'precio'          => 'nullable|numeric|min:0'
         ]);
 
         $producto = new Producto();
         $producto->id_subcategoria = $request->id_subcategoria;
         $producto->nombre          = $request->nombre;
         $producto->descripcion     = $request->descripcion;
+        $producto->precio          = $request->precio;  
+
 
         if ($request->hasFile('imagen')) {
 
@@ -123,12 +126,14 @@ class ProductoController extends Controller
             'id_subcategoria' => 'required|exists:subcategorias,id',
             'nombre'          => 'required',
             'descripcion'     => 'nullable',
-            'imagen'          => 'nullable|image'
+            'imagen'          => 'nullable|image',
+            'precio'          => 'nullable|numeric|min:0'
         ]);
 
         $producto->id_subcategoria = $request->id_subcategoria;
         $producto->nombre          = $request->nombre;
         $producto->descripcion     = $request->descripcion;
+        $producto->precio          = $request->precio;
 
         if ($request->hasFile('imagen')) {
 

@@ -3,253 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="icono.png" type="image/png">
+    <link rel="icon" href="{{ asset('icono.png') }}" type="image/png">
     <title>Panes dulces</title>
+
     <style>
-        body {
-            margin: 0;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+        :root{
+            --cafe-header:#8b5e3c;
+            --cafe-nav:#a97e5a;
+            --bg:#f4f1ea;
+            --card-bg:#ffffff;
+            --card-border:#e3d4c2;
+            --texto:#4b3828;
+            --precio:#d95c18;
         }
 
-        header {
-            background-color: #8b5e3c;
-            color: #fff;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        body{
+            margin:0;
+            font-family:'Trebuchet MS','Lucida Sans Unicode','Lucida Grande','Lucida Sans',Arial,sans-serif;
+            background:var(--bg);
+            color:var(--texto);
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 36px;
-            display: flex;
-            align-items: center;
+        /* HEADER */
+        header{
+            background:var(--cafe-header);
+            color:#fff;
+            padding:22px 10px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:12px;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,.15);
         }
 
-        header img {
-            width: 60px;
-            height: auto;
-            margin-right: 10px;
-            vertical-align: middle;
+        header img{width:52px}
+
+        header h1{
+            margin:0;
+            font-size:28px;
+            letter-spacing:.5px;
         }
 
-        /* barra de navegacion */
-        nav {
-            background-color: #a97e5a;
-            padding: 10px 0;
-            text-align: center;
+        /* NAV */
+        nav{
+            background:var(--cafe-nav);
+            padding:10px 0;
+            text-align:center;
+            box-shadow:0 3px 8px rgba(0,0,0,.12);
         }
 
-        nav a {
-            text-decoration: none;
-            color: #fff;
-            padding: 12px 20px;
-            font-size: 18px;
-            margin: 0 10px;
-            display: block;
+        nav a{
+            color:#fff;
+            text-decoration:none;
+            font-size:18px;
+            padding:8px 18px;
+            font-weight:bold;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        main{
+            max-width:1200px;
+            margin:0 auto 40px;
+            padding:20px 16px 40px;
         }
 
         .description{
-            text-align: center;
-            margin-inline: 10px 50px;
-            font-size: 18px;
-            color: #555;
+            text-align:center;
+            font-size:18px;
+            margin:15px 0 25px;
         }
 
-        /* Product Grid */
-        section.products {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
+        /* GRID DE PRODUCTOS */
+        section.products{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:22px;
         }
 
-        .product-card {
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.2s;
+        .product-card{
+            background:var(--card-bg);
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 6px 18px rgba(0,0,0,.10);
+            border:1px solid var(--card-border);
+            display:flex;
+            flex-direction:column;
         }
 
-        .product-card:hover {
-            transform: scale(1.05);
+        .product-card img{
+            width:100%;
+            height:230px;
+            object-fit:cover;
+            display:block;
+            background:#fff;
         }
 
-        .product-card img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
+        .info{
+            padding:14px 12px 16px;
+            text-align:center;
+            border-top:1px solid var(--card-border);
         }
 
-        .product-card h3 {
-            color: #D2691E;
-            margin: 10px 0;
+        .name{
+            margin:0 0 6px;
+            font-size:18px;
+            font-weight:bold;
+            color:var(--cafe-header);
         }
 
-        .product-card .price {
-            font-weight: bold;
-            color: #d95c18;
-            font-size: 18px;
-            margin: 10px 0;
+        .price{
+            margin:0;
+            font-size:18px;
+            font-weight:bold;
+            color:var(--precio);
         }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 20px;
-            }
-            .description{
-                font-size: 16px;
-                margin-inline: 10px 30px;
-            
-            }
+        @media (max-width:600px){
+            header h1{font-size:22px}
+            .description{font-size:16px}
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <h1>
-            <img src="pastel.png" alt="Pastel">
-            Panadería y Pastelería Dayane
-            <img src="icono.png" alt="Icono">
-        </h1>
-    </header>
-    <nav class="nav">
-        <a href="producto.html">Productos</a>
-    </nav>
 
-    <main>
-        <!-- Descripción -->
-        <div class="description">
-            <p>"Endulza tu día con nuestros irresistibles panes dulces, recién horneados y llenos de sabor. <br>
-                ¡Cada mordida es puro placer!" 🍯✨</p>
-        </div>
+<header>
+    <img src="{{ asset('pastel.png') }}" alt="Pastel">
+    <h1>Panadería y Pastelería Dayane</h1>
+    <img src="{{ asset('icono.png') }}" alt="Icono">
+</header>
 
-        <!-- panes dulces -->
-        <section id="dulce" class="products">
-            <div class="product-card dulce">
-                <img src="polvorones.jpg" alt="Polvorín Multicolores">
-                <h3>Polvorín Multicolores</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="margaritas.jpg" alt="Margaritas">
-                <h3>Margaritas</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="concha.jpg" alt="Concha">
-                <h3>Concha</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="puro.jpg" alt="Puro">
-                <h3>Puro</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="platano.jpg" alt="Platano">
-                <h3>Platano</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="mantecada.jpg" alt="Mantecada">
-                <h3>Mantecada</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="cuerno.jpg" alt="Cuerno">
-                <h3>Cuerno</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="marranito.jpg" alt="Marranito">
-                <h3>Marranito</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="ojo.jpg" alt="Ojo">
-                <h3>Ojo</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="bisquet.jpg" alt="Bisquet">
-                <h3>Bisquet</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="arracada.jpg" alt="Arracada">
-                <h3>Arracada</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="dona_azucar.jpg" alt="Dona de azucar">
-                <h3>Dona de azucar</h3>
-                <p class="price">$10</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="Pierna.jpg" alt="Pierna">
-                <h3>Pierna</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="roles_canela.jpg" alt="Roles de canela">
-                <h3>Roles de canela</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="dona_rellena.jpg" alt="Dona rellena">
-                <h3>Dona rellena</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="dona_de_chocolate.jpg" alt="Dona de chocolate">
-                <h3>Dona de chocolate</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="yoyo.png" alt="Yoyo">
-                <h3>Yoyo</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="rebanada.jpg" alt="Rebanada">
-                <h3>Rebanada</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="rebanada_mantequilla.jpg" alt="Rebanada de mantequilla">
-                <h3>Rebanada de mantequilla</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="empanadas.jpg" alt="Empanadas">
-                <h3>Empanadas</h3>
-                <p class="price">$12</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="caracol.jpg" alt="Caracol">
-                <h3>Caracol</h3>
-                <p class="price">$15</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="cono.jpg" alt="Cono">
-                <h3>Cono</h3>
-                <p class="price">$15</p>
-            </div>
-            <div class="product-card dulce">
-                <img src="bronquitis.jpg" alt="Tronco">
-                <h3>Tronco</h3>
-                <p class="price">$15</p>
-            </div>
-        </section>
-    </main>
+<nav>
+    <a href="{{ route('producto') }}">Productos</a>
+
+</nav>
+
+<main>
+    <div class="description">
+        "Endulza tu día con nuestros irresistibles panes dulces, recién horneados y llenos de sabor.
+        ¡Cada mordida es puro placer!" 🍯✨
+    </div>
+
+    <section class="products">
+        @forelse($productos as $producto)
+            <article class="product-card">
+        
+                <img src="{{ asset($producto->imagen) }}" alt="{{ $producto->nombre }}">
+
+                <div class="info">
+                    <p class="name">{{ $producto->nombre }}</p>
+
+                    @if(!is_null($producto->precio))
+                        <p class="price">${{ $producto->precio }}</p>
+                    @endif
+                </div>
+            </article>
+        @empty
+            <p style="grid-column:1/-1;text-align:center;">
+                No hay panes dulces registrados.
+            </p>
+        @endforelse
+    </section>
+</main>
+
 </body>
 </html>

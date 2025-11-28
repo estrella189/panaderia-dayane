@@ -58,12 +58,6 @@ Route::get('Mision y Vision.html', fn() => redirect('/Mision y Vision'));
 Route::get('/producto', fn() => view('producto'))->name('producto');
 Route::get('/producto.html', fn() => redirect('/producto'));
 
-Route::get('/panes_dulces',fn() => view('panes_dulces'))->name('panes_dulces');
-Route::get('/panes_dulces.html', fn() => redirect('/panes_dulces'));
-
-Route::get('/panes_salados', fn() => view('panes_salados'))->name('panes_salados');
-Route::get('/panes_salados.html', fn() => redirect('/panes_salados'));
-
 Route::get('/otros', fn() => view('otros'))->name('otros');
 Route::get('/otros.html', fn() => redirect('/otros'));
 
@@ -90,15 +84,6 @@ Route::get('/Para Eventos.html', fn() => redirect('/Para Eventos'));
 
 Route::get('/pasteles de frutas', fn() => view('pasteles de frutas'))->name('pasteles de frutas');
 Route::get('/pasteles de frutas.html', fn() => redirect('/pasteles de frutas'));
-
-Route::get('/leche', fn() => view('leche'))->name('leche');
-Route::get('/leche.html', fn() => redirect('/leche'));
-
-Route::get('/coca', fn() => view('coca'))->name('coca');
-Route::get('/coca.html', fn() => redirect('/coca'));
-
-Route::get('/hidratantes', fn() => view('hidratantes'))->name('hidratantes');
-Route::get('/hidratantes.html', fn() => redirect('/hidratantes'));
 
 
 use App\Http\Controllers\PedidoController;
@@ -283,3 +268,41 @@ Route::post('/restablecer', function (Illuminate\Http\Request $request) {
 
     return redirect()->route('login.form')->with('status', 'Contraseña actualizada correctamente.');
 })->name('password.update');
+
+use App\Models\Producto;
+
+Route::get('/panes_dulces', function () {
+   
+    $productos = Producto::where('id_subcategoria', 1)->get();
+
+    return view('panes_dulces', compact('productos'));
+})->name('panes_dulces');
+
+Route::get('/panes_salados', function () {
+   
+    $productos = Producto::where('id_subcategoria', 2)->get();
+
+    return view('panes_salados', compact('productos'));
+})->name('panes_salados');
+
+
+Route::get('/coca', function () {
+   
+    $productos = Producto::where('id_subcategoria', 10)->get();
+
+    return view('coca', compact('productos'));
+})->name('coca');
+
+Route::get ('/hidratantes', function () {
+   
+    $productos = Producto::where('id_subcategoria', 11)->get();
+
+    return view('hidratantes', compact('productos'));
+})->name('hidratantes');
+
+Route::get ('/leche', function () {
+   
+    $productos = Producto::where('id_subcategoria', 9)->get();
+
+    return view('leche', compact('productos'));
+})->name('leche');

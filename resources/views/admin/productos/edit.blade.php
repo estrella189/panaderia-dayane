@@ -72,6 +72,7 @@
 
     select,
     input[type="text"],
+    input[type="number"],
     input[type="file"],
     textarea{
       width:100%;
@@ -160,7 +161,7 @@
 <div class="wrapper">
   <div class="card">
     <h2>Modificar producto</h2>
-    <p class="sub">Actualiza la categoría, nombre, descripción e imagen del producto.</p>
+    <p class="sub">Actualiza la categoría, nombre, descripción, precio e imagen del producto.</p>
 
     <form method="POST"
           action="{{ route('admin.productos.update', $producto->id) }}"
@@ -193,11 +194,29 @@
 
       <!-- Nombre -->
       <label for="nombre">Nombre del producto</label>
-      <input type="text" id="nombre" name="nombre" value="{{ $producto->nombre }}" required>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        value="{{ old('nombre', $producto->nombre) }}"
+        required
+      >
+
+      <!-- Precio -->
+      <label for="precio">Precio (solo para panes con precio)</label>
+      <input
+        type="number"
+        step="0.01"
+        min="0"
+        id="precio"
+        name="precio"
+        value="{{ old('precio', $producto->precio) }}"
+        placeholder="Ejemplo: 10.00"
+      >
 
       <!-- Descripción -->
       <label for="descripcion">Descripción</label>
-      <textarea id="descripcion" name="descripcion">{{ $producto->descripcion }}</textarea>
+      <textarea id="descripcion" name="descripcion">{{ old('descripcion', $producto->descripcion) }}</textarea>
 
       <!-- Imagen actual -->
       <label>Imagen actual</label>
