@@ -70,14 +70,12 @@ class ProductoController extends Controller
         $producto->id_subcategoria = $request->id_subcategoria;
         $producto->nombre          = $request->nombre;
         $producto->descripcion     = $request->descripcion;
-        $producto->precio          = $request->precio;  
-
+        $producto->precio          = $request->precio;
 
         if ($request->hasFile('imagen')) {
 
             $sub = Subcategoria::find($request->id_subcategoria);
 
-            // Carpeta por subcategoría
             $mapCarpetas = [
                 6 => 'chocolate',
                 7 => 'eventos',
@@ -88,20 +86,21 @@ class ProductoController extends Controller
 
             $carpeta = $mapCarpetas[$sub->id] ?? 'otros';
 
-            // Nombre del archivo
             $nombreArchivo = time() . '.' . $request->imagen->extension();
 
-            // Ruta final en public/
-            $rutaCarpetaPublic = public_path("img/pasteles/{$carpeta}");
-            if (!is_dir($rutaCarpetaPublic)) {
-                mkdir($rutaCarpetaPublic, 0775, true);
+          
+            $root = $_SERVER['DOCUMENT_ROOT']; // esto apunta a public_html
+            $rutaCarpeta = $root . "/IMG/pasteles/{$carpeta}";
+
+            if (!is_dir($rutaCarpeta)) {
+                mkdir($rutaCarpeta, 0775, true);
             }
 
-            // Guardar archivo
-            $request->imagen->move($rutaCarpetaPublic, $nombreArchivo);
+            // Mover archivo subido
+            $request->imagen->move($rutaCarpeta, $nombreArchivo);
 
-            // Guardar ruta en la BD
-            $producto->imagen = "img/pasteles/{$carpeta}/{$nombreArchivo}";
+           
+            $producto->imagen = "IMG/pasteles/{$carpeta}/{$nombreArchivo}";
         }
 
         $producto->save();
@@ -137,9 +136,13 @@ class ProductoController extends Controller
 
         if ($request->hasFile('imagen')) {
 
-            // Borrar la imagen anterior
-            if ($producto->imagen && file_exists(public_path($producto->imagen))) {
-                @unlink(public_path($producto->imagen));
+            // 🗑 Borrar imagen anterior
+            if ($producto->imagen) {
+                $root = $_SERVER['DOCUMENT_ROOT'];
+                $rutaAnterior = $root . '/' . ltrim($producto->imagen, '/');
+                if (file_exists($rutaAnterior)) {
+                    @unlink($rutaAnterior);
+                }
             }
 
             $sub = Subcategoria::find($request->id_subcategoria);
@@ -156,14 +159,18 @@ class ProductoController extends Controller
 
             $nombreArchivo = time() . '.' . $request->imagen->extension();
 
-            $rutaCarpetaPublic = public_path("img/pasteles/{$carpeta}");
-            if (!is_dir($rutaCarpetaPublic)) {
-                mkdir($rutaCarpetaPublic, 0775, true);
+      
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $rutaCarpeta = $root . "/IMG/pasteles/{$carpeta}";
+
+            if (!is_dir($rutaCarpeta)) {
+                mkdir($rutaCarpeta, 0775, true);
             }
 
-            $request->imagen->move($rutaCarpetaPublic, $nombreArchivo);
+            $request->imagen->move($rutaCarpeta, $nombreArchivo);
 
-            $producto->imagen = "img/pasteles/{$carpeta}/{$nombreArchivo}";
+          
+            $producto->imagen = "IMG/pasteles/{$carpeta}/{$nombreArchivo}";
         }
 
         $producto->save();
@@ -173,8 +180,12 @@ class ProductoController extends Controller
 
     public function destroy(Producto $producto)
     {
-        if ($producto->imagen && file_exists(public_path($producto->imagen))) {
-            @unlink(public_path($producto->imagen));
+        if ($producto->imagen) {
+            $root = $_SERVER['DOCUMENT_ROOT'];
+            $ruta = $root . '/' . ltrim($producto->imagen, '/');
+            if (file_exists($ruta)) {
+                @unlink($ruta);
+            }
         }
 
         $producto->delete();
