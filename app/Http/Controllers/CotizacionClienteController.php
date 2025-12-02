@@ -120,7 +120,36 @@ class CotizacionClienteController extends Controller
 
         $cotizacion->load('producto');
 
-        return view('cliente.cotizaciones.edit', compact('cotizacion'));
+        // 👇 EXTRAEMOS LOS DATOS DESDE "detalles"
+        $datos = [
+            'cantidad'      => null,
+            'fecha_entrega' => null,
+            'tamano'        => null,
+            'sabor'         => null,
+            'mensaje'       => null,
+        ];
+
+        if (!empty($cotizacion->detalles)) {
+            $partes = explode(' | ', $cotizacion->detalles);
+
+            foreach ($partes as $parte) {
+                $parte = trim($parte);
+
+                if (strpos($parte, 'Cantidad: ') === 0) {
+                    $datos['cantidad'] = trim(substr($parte, strlen('Cantidad: ')));
+                } elseif (strpos($parte, 'Fecha entrega: ') === 0) {
+                    $datos['fecha_entrega'] = trim(substr($parte, strlen('Fecha entrega: ')));
+                } elseif (strpos($parte, 'Tamaño: ') === 0) {
+                    $datos['tamano'] = trim(substr($parte, strlen('Tamaño: ')));
+                } elseif (strpos($parte, 'Sabor: ') === 0) {
+                    $datos['sabor'] = trim(substr($parte, strlen('Sabor: ')));
+                } elseif (strpos($parte, 'Mensaje: ') === 0) {
+                    $datos['mensaje'] = trim(substr($parte, strlen('Mensaje: ')));
+                }
+            }
+        }
+
+        return view('cliente.cotizaciones.edit', compact('cotizacion', 'datos'));
     }
 
     public function update(Request $request, Cotizacion $cotizacion)
@@ -136,7 +165,7 @@ class CotizacionClienteController extends Controller
                 ->with('error', 'Esta cotización ya tiene un pedido asociado y no se puede editar.');
         }
 
-        // Validamos los campos del formulario (aunque en BD solo exista "detalles")
+        // Validamos los campos del formulario
         $request->validate([
             'cantidad'      => 'required|integer|min:1',
             'tamano'        => 'required|string',
@@ -155,11 +184,10 @@ class CotizacionClienteController extends Controller
             $detalles .= " | Mensaje: {$mensaje}";
         }
 
-        // Actualizamos SOLO columnas que existen en la tabla:
-        // id_cliente, id_producto, detalles, precio, estado, created_at, updated_at
+        // Solo columnas que existen
         $cotizacion->detalles = $detalles;
-        $cotizacion->estado   = 'pendiente'; // vuelve a pendiente para que el admin recalcule
-        $cotizacion->precio   = null;        // borrar precio previo
+        $cotizacion->estado   = 'pendiente';
+        $cotizacion->precio   = null;
 
         $cotizacion->save();
 

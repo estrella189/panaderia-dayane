@@ -151,7 +151,7 @@
 <div class="page">
     <div class="card">
 
-        {{-- MOSTRAR IMAGEN DEL PASTEL DESDE public/imagenes/... --}}
+{{-- MOSTRAR IMAGEN --}}
 @if($cotizacion->producto && $cotizacion->producto->imagen)
     <img src="{{ asset($cotizacion->producto->imagen) }}"
          class="card-img"
@@ -160,10 +160,9 @@
     <div class="card-img"></div>
 @endif
 
-
         <div class="card-body">
 
-            <h2>{{ $cotizacion->producto->nombre }}</h2>
+            <h2>{{ $cotizacion->producto->nombre ?? 'Producto sin nombre' }}</h2>
 
             <div class="folio">
                 Cotización #{{ $cotizacion->id }}
@@ -174,45 +173,47 @@
                 @csrf
                 @method('PUT')
 
+            {{-- CANTIDAD --}}
+            <div class="field">
+                <label>Cantidad</label>
+                <input type="number" name="cantidad" min="1"
+                    value="{{ old('cantidad', $datos['cantidad']) }}">
+            </div>
+
+            {{-- FECHA --}}
+            <div class="field">
+                <label>Fecha de entrega</label>
+                <input type="date" name="fecha_entrega"
+                    value="{{ old('fecha_entrega', $datos['fecha_entrega']) }}">
+            </div>
+
+            {{-- MENSAJE --}}
+            <div class="field">
+                <label>Mensaje (opcional)</label>
+                <input type="text" name="detalles"
+                    value="{{ old('detalles', $datos['mensaje']) }}"
+                    placeholder="Escribe un mensaje personalizado">
+            </div>
+
+            <div class="row-2">
                 <div class="field">
-                    <label>Cantidad</label>
-                    <input type="number" name="cantidad" min="1"
-                           value="{{ old('cantidad') }}">
+                    <label>Tamaño</label>
+                    <select name="tamano">
+                        <option value="Chico"   {{ old('tamano', $datos['tamano']) == 'Chico'   ? 'selected' : '' }}>Chico</option>
+                        <option value="Mediano" {{ old('tamano', $datos['tamano']) == 'Mediano' ? 'selected' : '' }}>Mediano</option>
+                        <option value="Grande"  {{ old('tamano', $datos['tamano']) == 'Grande'  ? 'selected' : '' }}>Grande</option>
+                    </select>
                 </div>
 
                 <div class="field">
-                    <label>Fecha de entrega</label>
-                    <input type="date" name="fecha_entrega"
-                           value="{{ old('fecha_entrega') }}">
+                    <label>Sabor</label>
+                    <select name="sabor">
+                        <option value="Vainilla"  {{ old('sabor', $datos['sabor']) == 'Vainilla'  ? 'selected' : '' }}>Vainilla</option>
+                        <option value="Chocolate" {{ old('sabor', $datos['sabor']) == 'Chocolate' ? 'selected' : '' }}>Chocolate</option>
+                        <option value="Fresa"     {{ old('sabor', $datos['sabor']) == 'Fresa'     ? 'selected' : '' }}>Fresa</option>
+                    </select>
                 </div>
-
-                <div class="field">
-                    <label>Mensaje (opcional)</label>
-                    <input type="text" name="detalles"
-                           value="{{ old('detalles') }}"
-                           placeholder="Escribe un mensaje personalizado">
-                </div>
-
-                <div class="row-2">
-                    <div class="field">
-                        <label>Tamaño</label>
-                        <select name="tamano">
-                            <option value="Pequeño">Pequeño</option>
-                            <option value="Mediano">Mediano</option>
-                            <option value="Grande">Grande</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label>Sabor</label>
-                        <select name="sabor">
-                            <option value="Vainilla">Vainilla</option>
-                            <option value="Chocolate">Chocolate</option>
-                            <option value="Fresa">Fresa</option>
-                        </select>
-                    </div>
-                </div>
-
+            </div>
                 <button class="btn-main" type="submit">
                     Guardar cambios
                 </button>
@@ -230,5 +231,4 @@
 
 </body>
 </html>
-
 

@@ -192,10 +192,6 @@
           </tbody>
         </table>
 
-        <div class="pagination">
-          {{ $cotizaciones->links() }}
-        </div>
-
       </div>
     </div>
 
